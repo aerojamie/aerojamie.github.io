@@ -1,13 +1,170 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Jamie's Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aerojamie | GitHub Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Arial; text-align: center; }
+        :root {
+            --primary: #0d1117;
+            --secondary: #161b22;
+            --accent: #58a6ff;
+            --text: #c9d1d9;
+            --text-light: #8b949e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            margin-right: 2rem;
+        }
+        
+        h1 {
+            color: var(--accent);
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .tagline {
+            color: var(--text-light);
+            margin: 0.5rem 0;
+        }
+        
+        .bio {
+            background-color: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: var(--accent);
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .skill {
+            background-color: var(--secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .social-link {
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-link:hover {
+            color: var(--accent);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .avatar {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to My GitHub Page! 👋</h1>
-    <p>This site is hosted for free on GitHub Pages.</p>
+    <div class="container">
+        <header>
+            <img src="https://avatars.githubusercontent.com/u/YOUR_GITHUB_USER_ID?v=4" alt="Profile Picture" class="avatar">
+            <div>
+                <h1>aerojamie</h1>
+                <p class="tagline">Developer | Tech Enthusiast</p>
+            </div>
+        </header>
+        
+        <section class="bio">
+            <p>Hello! I'm Jamie, a passionate developer who loves building things for the web. I enjoy working with modern technologies and contributing to open-source projects.</p>
+        </section>
+        
+        <h2 class="section-title">Skills</h2>
+        <div class="skills">
+            <span class="skill">HTML/CSS</span>
+            <span class="skill">JavaScript</span>
+            <span class="skill">Git</span>
+            <span class="skill">Python</span>
+            <span class="skill">Web Development</span>
+            <span class="skill">UI/UX</span>
+        </div>
+        
+        <h2 class="section-title">Projects</h2>
+        <p>Check out my work on <a href="https://github.com/aerojamie" style="color: var(--accent);">GitHub</a>.</p>
+        
+        <h2 class="section-title">Connect</h2>
+        <div class="social-links">
+            <a href="https://github.com/aerojamie" class="social-link" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://twitter.com/yourhandle" class="social-link" target="_blank">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://linkedin.com/in/yourprofile" class="social-link" target="_blank">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="mailto:your@email.com" class="social-link" target="_blank">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+        
+        <footer>
+            <p>© 2023 aerojamie. All rights reserved.</p>
+        </footer>
+    </div>
 </body>
 </html>
