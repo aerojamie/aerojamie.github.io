@@ -6,6 +6,32 @@
     <title>Jamie</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .resume-content {
+            display: none;
+        }
+        .show-resume {
+            display: block;
+        }
+        #resume-button {
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #resume-button:hover {
+            background-color: #45a049;
+        }
+        .intro {
+            text-align: center;
+            margin: 50px 0;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -13,197 +39,251 @@
             <i class="fas fa-moon"></i>
         </button>
         
-        <header>
-            <img src="https://avatars.githubusercontent.com/u/116468724?v=4" alt="Profile Picture" class="avatar">
-            <div class="header-text">
-                <h1>Jamie Sessions</h1>
-                <div class="contact-info">
-                    <div><i class="fas fa-phone"></i> (208) 608-1914</div>
-                    <div><i class="fas fa-envelope"></i> <a href="mailto:jamiesess05@gmail.com">jamiesess05@gmail.com</a></div>
-                    <div><i class="fas fa-map-marker-alt"></i> Idaho</div>
+        <div class="intro">
+            <header>
+                <img src="https://avatars.githubusercontent.com/u/116468724?v=4" alt="Profile Picture" class="avatar">
+                <div class="header-text">
+                    <h1>Jamie Sessions</h1>
+                    <div class="contact-info">
+                        <div><i class="fas fa-phone"></i> (208) 608-1914</div>
+                        <div><i class="fas fa-envelope"></i> <a href="mailto:jamiesess05@gmail.com">jamiesess05@gmail.com</a></div>
+                        <div><i class="fas fa-map-marker-alt"></i> Idaho</div>
+                    </div>
+                </div>
+            </header>
+            
+            <section class="bio">
+                <p>As a community service enthusiast, I excel in high-pressure situations, demonstrate effective leadership, and collaborate seamlessly to achieve any objective.</p>
+            </section>
+            
+            <button id="resume-button">View Resume</button>
+            
+            <div class="social-links">
+                <a href="https://github.com/aerojamie" class="social-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/jamie-sessions-15b646281" class="social-link" target="_blank">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://instagram.com/cijamie" class="social-link" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="mailto:jamiesess05@gmail.com" class="social-link" target="_blank">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="tel:2086081914" class="social-link">
+                    <i class="fas fa-phone"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="resume-content" id="resume-content">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills">
+                <span class="skill">Technical Support</span>
+                <span class="skill">Communication Specialist</span>
+                <span class="skill">Cybersecurity</span>
+                <span class="skill">POS Terminals</span>
+                <span class="skill">Leadership</span>
+                <span class="skill">Trend Analysis</span>
+                <span class="skill">Microsoft Dynamics AX</span>
+                <span class="skill">Zendesk</span>
+                <span class="skill">Social Media Marketing</span>
+            </div>
+            
+            <h2 class="section-title">Work Experience</h2>
+            
+            <div class="experience-item">
+                <div class="item-header">
+                    <span class="item-title">Social Media Coordinator</span>
+                    <span class="item-date">2023 - 2024</span>
+                </div>
+                <div class="item-subtitle">University of Idaho</div>
+                <div class="item-description">
+                    Honed analytical skills in social marketing, tracking online trends and crafting impactful posts to promote events and create a digital presence across social media platforms.
                 </div>
             </div>
-        </header>
-        
-        <section class="bio">
-            <p>As a community service enthusiast, I excel in high-pressure situations, demonstrate effective leadership, and collaborate seamlessly to achieve any objective.</p>
-        </section>
-        
-        <h2 class="section-title">Skills</h2>
-        <div class="skills">
-            <span class="skill">Technical Support</span>
-            <span class="skill">Communication Specialist</span>
-            <span class="skill">Cybersecurity</span>
-            <span class="skill">POS Terminals</span>
-            <span class="skill">Leadership</span>
-            <span class="skill">Trend Analysis</span>
-            <span class="skill">Microsoft Dynamics AX</span>
-            <span class="skill">Zendesk</span>
-            <span class="skill">Social Media Marketing</span>
-        </div>
-        
-        <h2 class="section-title">Work Experience</h2>
-        
-        <div class="experience-item">
-            <div class="item-header">
-                <span class="item-title">Social Media Coordinator</span>
-                <span class="item-date">2023 - 2024</span>
+            
+            <div class="experience-item">
+                <div class="item-header">
+                    <span class="item-title">Customer Service Specialist</span>
+                    <span class="item-date">2020 - 2022</span>
+                </div>
+                <div class="item-subtitle">World Connection / Tempur-Pedic</div>
+                <div class="item-description">
+                    Managed inquiries and resolved issues using Microsoft Dynamics AX and Zendesk for efficient communication and problem-solving.
+                </div>
             </div>
-            <div class="item-subtitle">University of Idaho</div>
-            <div class="item-description">
-                Honed analytical skills in social marketing, tracking online trends and crafting impactful posts to promote events and create a digital presence across social media platforms.
+            
+            <div class="experience-item">
+                <div class="item-header">
+                    <span class="item-title">Barista</span>
+                    <span class="item-date">2021 - 2023</span>
+                </div>
+                <div class="item-subtitle">The Human Bean, Einstein Bros Bagels</div>
+                <div class="item-description">
+                    Crafted delightful coffee, honed brewing and latte skills, and used specialized systems like POS terminals and coffee machines for efficient service.
+                </div>
             </div>
-        </div>
-        
-        <div class="experience-item">
-            <div class="item-header">
-                <span class="item-title">Customer Service Specialist</span>
-                <span class="item-date">2020 - 2022</span>
+            
+            <div class="experience-item">
+                <div class="item-header">
+                    <span class="item-title">Teller</span>
+                    <span class="item-date">2024 - 2024</span>
+                </div>
+                <div class="item-subtitle">CapEd Credit Union</div>
+                <div class="item-description">
+                    Assisted with customer transactions, managed inquiries, and supported daily banking operations to ensure efficient service.
+                </div>
             </div>
-            <div class="item-subtitle">World Connection / Tempur-Pedic</div>
-            <div class="item-description">
-                Managed inquiries and resolved issues using Microsoft Dynamics AX and Zendesk for efficient communication and problem-solving.
+            
+            <div class="experience-item">
+                <div class="item-header">
+                    <span class="item-title">English Second Language Tutor</span>
+                    <span class="item-date">2020 - 2022</span>
+                </div>
+                <div class="item-subtitle">International Baccalaureate</div>
+                <div class="item-description">
+                    Taught English to young children, improving their language skills while enhancing my own through foreign language classes and proficiency tests.
+                </div>
             </div>
-        </div>
-        
-        <div class="experience-item">
-            <div class="item-header">
-                <span class="item-title">Barista</span>
-                <span class="item-date">2021 - 2023</span>
-            </div>
-            <div class="item-subtitle">The Human Bean, Einstein Bros Bagels</div>
-            <div class="item-description">
-                Crafted delightful coffee, honed brewing and latte skills, and used specialized systems like POS terminals and coffee machines for efficient service.
-            </div>
-        </div>
-        
-        <div class="experience-item">
-            <div class="item-header">
-                <span class="item-title">Teller</span>
-                <span class="item-date">2024 - 2024</span>
-            </div>
-            <div class="item-subtitle">CapEd Credit Union</div>
-            <div class="item-description">
-                Assisted with customer transactions, managed inquiries, and supported daily banking operations to ensure efficient service.
-            </div>
-        </div>
-        
-        <div class="experience-item">
-            <div class="item-header">
-                <span class="item-title">English Second Language Tutor</span>
-                <span class="item-date">2020 - 2022</span>
-            </div>
-            <div class="item-subtitle">International Baccalaureate</div>
-            <div class="item-description">
-                Taught English to young children, improving their language skills while enhancing my own through foreign language classes and proficiency tests.
-            </div>
-        </div>
-        
-        <div class="two-column">
-            <div>
-                <h2 class="section-title">Education</h2>
-                <div class="education-item">
-                    <div class="item-header">
-                        <span class="item-title">University of Idaho</span>
-                        <span class="item-date">2023 - 2027</span>
+            
+            <div class="two-column">
+                <div>
+                    <h2 class="section-title">Education</h2>
+                    <div class="education-item">
+                        <div class="item-header">
+                            <span class="item-title">University of Idaho</span>
+                            <span class="item-date">2023 - 2027</span>
+                        </div>
+                        <div class="item-description">
+                            B.A. International Studies
+                        </div>
                     </div>
-                    <div class="item-description">
-                        B.A. International Studies
+                    
+                    <div class="education-item">
+                        <div class="item-header">
+                            <span class="item-title">Sage International School of Boise</span>
+                            <span class="item-date">2019 - 2023</span>
+                        </div>
+                        <div class="item-description">
+                            Highschool Diploma<br>
+                            International Baccalaureate Career Programme Certificate
+                        </div>
                     </div>
                 </div>
                 
-                <div class="education-item">
-                    <div class="item-header">
-                        <span class="item-title">Sage International School of Boise</span>
-                        <span class="item-date">2019 - 2023</span>
+                <div>
+                    <h2 class="section-title">Languages</h2>
+                    <div class="skills">
+                        <span class="skill">English</span>
+                        <span class="skill">French</span>
                     </div>
-                    <div class="item-description">
-                        Highschool Diploma<br>
-                        International Baccalaureate Career Programme Certificate
+                    
+                    <h2 class="section-title">Volunteer Experience</h2>
+                    <div class="experience-item">
+                        <div class="item-description">
+                            Volunteered at a homeless shelter for 3 years, a foodbank for 5 years and an assisted living home for 3 years
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div>
-                <h2 class="section-title">Languages</h2>
-                <div class="skills">
-                    <span class="skill">English</span>
-                    <span class="skill">French</span>
+            <h2 class="section-title">Awards and Certificates</h2>
+            <div class="certificate-item">
+                <div class="item-header">
+                    <span class="item-title">Idaho's Entrepreneurial Challenge and Pitch Competition</span>
+                    <span class="item-date">2021</span>
                 </div>
-                
-                <h2 class="section-title">Volunteer Experience</h2>
-                <div class="experience-item">
-                    <div class="item-description">
-                        Volunteered at a homeless shelter for 3 years, a foodbank for 5 years and an assisted living home for 3 years
-                    </div>
+                <div class="item-subtitle">IEC Boise State University</div>
+            </div>
+            
+            <div class="certificate-item">
+                <div class="item-header">
+                    <span class="item-title">International Baccalaureate Career Programme Certificate</span>
+                    <span class="item-date">2023</span>
                 </div>
             </div>
-        </div>
-        
-        <h2 class="section-title">Awards and Certificates</h2>
-        <div class="certificate-item">
-            <div class="item-header">
-                <span class="item-title">Idaho's Entrepreneurial Challenge and Pitch Competition</span>
-                <span class="item-date">2021</span>
+            
+            <div class="certificate-item">
+                <div class="item-header">
+                    <span class="item-title">Fundamentals of Effective Communication skills</span>
+                    <span class="item-date">2018</span>
+                </div>
+                <div class="item-subtitle">Coursera</div>
             </div>
-            <div class="item-subtitle">IEC Boise State University</div>
-        </div>
-        
-        <div class="certificate-item">
-            <div class="item-header">
-                <span class="item-title">International Baccalaureate Career Programme Certificate</span>
-                <span class="item-date">2023</span>
+            
+            <div class="certificate-item">
+                <div class="item-header">
+                    <span class="item-title">Hospitality and Travel Hospitality Certified</span>
+                    <span class="item-date">2022</span>
+                </div>
+                <div class="item-subtitle">Delaware North</div>
+            </div>
+            
+            <h2 class="section-title">Other Experience</h2>
+            <div class="experience-item">
+                <div class="item-description">
+                    <ul>
+                        <li>Conducted a course at the University of Northern Colorado centered on The Art of Effective Communication</li>
+                        <li>Presented speeches on effective communication in professional settings and personal relationships at different university conferences</li>
+                        <li>Managed the Social Media accounts of several large corporations and universities</li>
+                        <li>Held the position of president for a university's student-led government body, handling finances, organizing events, and supervising policy development</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://github.com/aerojamie" class="social-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/jamie-sessions-15b646281" class="social-link" target="_blank">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://instagram.com/cijamie" class="social-link" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="mailto:jamiesess05@gmail.com" class="social-link" target="_blank">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="tel:2086081914" class="social-link">
+                    <i class="fas fa-phone"></i>
+                </a>
             </div>
         </div>
-        
-        <div class="certificate-item">
-            <div class="item-header">
-                <span class="item-title">Fundamentals of Effective Communication skills</span>
-                <span class="item-date">2018</span>
-            </div>
-            <div class="item-subtitle">Coursera</div>
-        </div>
-        
-        <div class="certificate-item">
-            <div class="item-header">
-                <span class="item-title">Hospitality and Travel Hospitality Certified</span>
-                <span class="item-date">2022</span>
-            </div>
-            <div class="item-subtitle">Delaware North</div>
-        </div>
-        
-        <h2 class="section-title">Other Experience</h2>
-        <div class="experience-item">
-            <div class="item-description">
-                <ul>
-                    <li>Conducted a course at the University of Northern Colorado centered on The Art of Effective Communication</li>
-                    <li>Presented speeches on effective communication in professional settings and personal relationships at different university conferences</li>
-                    <li>Managed the Social Media accounts of several large corporations and universities</li>
-                    <li>Held the position of president for a university's student-led government body, handling finances, organizing events, and supervising policy development</li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="social-links">
-            <a href="https://github.com/aerojamie" class="social-link" target="_blank">
-                <i class="fab fa-github"></i>
-            </a>
-            <a href="https://www.linkedin.com/in/jamie-sessions-15b646281" class="social-link" target="_blank">
-                <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="https://instagram.com/cijamie" class="social-link" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="mailto:jamiesess05@gmail.com" class="social-link" target="_blank">
-                <i class="fas fa-envelope"></i>
-            </a>
-            <a href="tel:2086081914" class="social-link">
-                <i class="fas fa-phone"></i>
-            </a>
-        </div>
-        
-        <!-- Rest of your HTML remains the same -->
     </div>
-    <script src="script.js"></script>
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const icon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+        
+        // Resume toggle functionality
+        const resumeButton = document.getElementById('resume-button');
+        const resumeContent = document.getElementById('resume-content');
+        
+        resumeButton.addEventListener('click', () => {
+            resumeContent.classList.toggle('show-resume');
+            if (resumeContent.classList.contains('show-resume')) {
+                resumeButton.textContent = 'Hide Resume';
+                // Smooth scroll to the resume content
+                resumeContent.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                resumeButton.textContent = 'View Resume';
+                // Scroll back to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    </script>
 </body>
 </html>
