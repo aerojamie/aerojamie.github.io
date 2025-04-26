@@ -1,29 +1,41 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = themeToggle.querySelector('i');
+    const resumeButton = document.getElementById('resume-button');
+    const resumeContent = document.getElementById('resume-content');
     
-    // Check for saved theme preference or use preferred color scheme
-    const savedTheme = localStorage.getItem('theme') || 
-                      (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    // Initially hide the resume content
+    resumeContent.style.display = 'none';
     
-    // Apply the saved theme
-    setTheme(savedTheme);
-    
-    themeToggle.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
+    resumeButton.addEventListener('click', function() {
+        if (resumeContent.classList.contains('show')) {
+            // Hide resume
+            resumeContent.classList.remove('show');
+            resumeButton.textContent = 'View Resume';
+            
+            // Scroll to top after animation completes
+            setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }, 300);
+        } else {
+            // Show resume
+            resumeContent.classList.add('show');
+            resumeButton.textContent = 'Hide Resume';
+            
+            // Scroll to resume after a slight delay to allow display change
+            setTimeout(() => {
+                resumeContent.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 50);
+        }
     });
     
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        if (theme === 'dark') {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-        } else {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-    }
+    // Add hover effects to all interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, .skill');
+    interactiveElements.forEach(el => {
+        el.style.transition = 'all 0.3s ease';
+    });
 });
