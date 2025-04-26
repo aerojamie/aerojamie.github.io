@@ -2,33 +2,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const resumeButton = document.getElementById('resume-button');
     const resumeContent = document.getElementById('resume-content');
     
-    resumeButton.addEventListener('click', function() {
-        if (resumeContent.classList.contains('show')) {
+    // Simple toggle function
+    function toggleResume() {
+        if (resumeContent.classList.contains('visible')) {
             // Hide resume
-            resumeContent.classList.remove('show');
-            resumeButton.textContent = 'View Resume';
-            
-            // Scroll to top after animation completes
+            resumeContent.classList.remove('visible');
             setTimeout(() => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
                 resumeContent.style.display = 'none';
-            }, 300);
+                resumeButton.textContent = 'View Resume';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 300); // Match this with CSS transition time
         } else {
             // Show resume
             resumeContent.style.display = 'block';
+            // Trigger reflow
+            void resumeContent.offsetWidth;
+            resumeContent.classList.add('visible');
+            resumeButton.textContent = 'Hide Resume';
             setTimeout(() => {
-                resumeContent.classList.add('show');
-                resumeButton.textContent = 'Hide Resume';
-                
-                // Scroll to resume
-                resumeContent.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }, 10);
+                resumeContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
         }
-    });
+    }
+
+    // Add click event
+    resumeButton.addEventListener('click', toggleResume);
 });
