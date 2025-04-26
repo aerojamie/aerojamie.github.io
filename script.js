@@ -2,32 +2,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const resumeButton = document.getElementById('resume-button');
     const resumeContent = document.getElementById('resume-content');
     
-    // Initially hide the resume content
-    resumeContent.style.display = 'none';
-    
     resumeButton.addEventListener('click', function() {
-        if (resumeContent.style.display === 'none' || resumeContent.style.display === '') {
+        if (resumeContent.classList.contains('show')) {
+            // Hide resume
+            resumeContent.classList.remove('show');
+            resumeButton.textContent = 'View Resume';
+            
+            // Scroll to top after animation completes
+            setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                resumeContent.style.display = 'none';
+            }, 300);
+        } else {
             // Show resume
             resumeContent.style.display = 'block';
-            resumeButton.textContent = 'Hide Resume';
-            
-            // Smooth scroll to resume section
             setTimeout(() => {
+                resumeContent.classList.add('show');
+                resumeButton.textContent = 'Hide Resume';
+                
+                // Scroll to resume
                 resumeContent.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
             }, 10);
-        } else {
-            // Hide resume
-            resumeContent.style.display = 'none';
-            resumeButton.textContent = 'View Resume';
-            
-            // Scroll back to top
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
         }
     });
 });
