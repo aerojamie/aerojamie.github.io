@@ -6,36 +6,28 @@ document.addEventListener('DOMContentLoaded', function() {
     resumeContent.style.display = 'none';
     
     resumeButton.addEventListener('click', function() {
-        if (resumeContent.classList.contains('show')) {
-            // Hide resume
-            resumeContent.classList.remove('show');
-            resumeButton.textContent = 'View Resume';
-            
-            // Scroll to top after animation completes
-            setTimeout(() => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            }, 300);
-        } else {
+        if (resumeContent.style.display === 'none' || resumeContent.style.display === '') {
             // Show resume
-            resumeContent.classList.add('show');
+            resumeContent.style.display = 'block';
             resumeButton.textContent = 'Hide Resume';
             
-            // Scroll to resume after a slight delay to allow display change
+            // Smooth scroll to resume section
             setTimeout(() => {
                 resumeContent.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
-            }, 50);
+            }, 10);
+        } else {
+            // Hide resume
+            resumeContent.style.display = 'none';
+            resumeButton.textContent = 'View Resume';
+            
+            // Scroll back to top
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         }
-    });
-    
-    // Add hover effects to all interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, .skill');
-    interactiveElements.forEach(el => {
-        el.style.transition = 'all 0.3s ease';
     });
 });
