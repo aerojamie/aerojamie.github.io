@@ -9,6 +9,19 @@
     --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
+/* RESUME TOGGLE STYLES */
+#resume-content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#resume-content.show {
+    display: block;
+    opacity: 1;
+}
+
+/* BASE STYLES */
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--primary);
@@ -25,6 +38,7 @@ body {
     padding: 2rem;
 }
 
+/* HEADER STYLES */
 header {
     display: flex;
     align-items: center;
@@ -77,6 +91,7 @@ h1 {
     color: var(--accent);
 }
 
+/* BIO SECTION */
 .bio {
     background-color: var(--secondary);
     padding: 1.5rem;
@@ -87,6 +102,7 @@ h1 {
     box-shadow: var(--card-shadow);
 }
 
+/* SECTION TITLES */
 .section-title {
     color: var(--accent);
     border-bottom: 2px solid var(--border);
@@ -97,6 +113,7 @@ h1 {
     letter-spacing: -0.5px;
 }
 
+/* SKILLS */
 .skills {
     display: flex;
     flex-wrap: wrap;
@@ -119,6 +136,7 @@ h1 {
     transform: translateY(-2px);
 }
 
+/* EXPERIENCE ITEMS */
 .experience-item, .education-item, .certificate-item {
     background-color: var(--secondary);
     padding: 1.5rem;
@@ -162,6 +180,7 @@ h1 {
     line-height: 1.7;
 }
 
+/* SOCIAL LINKS */
 .social-links {
     display: flex;
     gap: 1.5rem;
@@ -181,12 +200,14 @@ h1 {
     transform: scale(1.2);
 }
 
+/* TWO COLUMN LAYOUT */
 .two-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 }
 
+/* BUTTON STYLES */
 .modern-button {
     background-color: var(--accent);
     color: white;
@@ -208,26 +229,7 @@ h1 {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Make sure this is the only rule for .resume-content */
-#resume-content {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#resume-content.show {
-    display: block;
-    opacity: 1;
-}
-
-/* Add this to prevent any other CSS from interfering */
-#resume-content {
-    all: initial;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
+/* RESPONSIVE STYLES */
 @media (max-width: 768px) {
     .two-column {
         grid-template-columns: 1fr;
@@ -262,14 +264,4 @@ h1 {
     .container {
         padding: 1.5rem;
     }
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease forwards;
 }
