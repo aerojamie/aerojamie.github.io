@@ -6,13 +6,10 @@
     <title>Jamie Sessions</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-            <i class="fas fa-moon"></i>
-        </button>
-        
         <div class="intro">
             <header>
                 <img src="https://avatars.githubusercontent.com/u/116468724?v=4" alt="Profile Picture" class="avatar">
@@ -30,7 +27,7 @@
                 <p>As a community service enthusiast, I excel in high-pressure situations, demonstrate effective leadership, and collaborate seamlessly to achieve any objective.</p>
             </section>
             
-            <button id="resume-button">View Resume</button>
+            <button id="resume-button" class="modern-button">View Resume</button>
             
             <div class="social-links">
                 <a href="https://github.com/aerojamie" class="social-link" target="_blank">
@@ -51,54 +48,53 @@
             </div>
         </div>
         
-<div class="resume-content" id="resume-content">
-    <h2 class="section-title">Skills</h2>
-    <div class="skills">
-        <!-- Technical Skills -->
-        <span class="skill">Technical Support</span>
-        <span class="skill">Cybersecurity</span>
-        <span class="skill">POS Terminals</span>
-        <span class="skill">Microsoft Dynamics AX</span>
-        <span class="skill">Zendesk</span>
-        <span class="skill">Customer Relationship Management (CRM)</span>
-        <span class="skill">Help Desk Support</span>
-        <span class="skill">Microsoft Office Suite</span>
-        
-        <!-- Communication/Marketing -->
-        <span class="skill">Communication Specialist</span>
-        <span class="skill">Social Media Marketing</span>
-        <span class="skill">Social Media Management</span>
-        <span class="skill">Content Creation</span>
-        <span class="skill">Public Speaking</span>
-        <span class="skill">Bilingual (English/French)</span>
-        
-        <!-- Analytical -->
-        <span class="skill">Trend Analysis</span>
-        <span class="skill">Data Analysis</span>
-        
-        <!-- Leadership/Management -->
-        <span class="skill">Leadership</span>
-        <span class="skill">Team Collaboration</span>
-        <span class="skill">Event Coordination</span>
-        
-        <!-- Customer Service -->
-        <span class="skill">Customer Engagement</span>
-        <span class="skill">Problem Solving</span>
-        <span class="skill">Multitasking</span>
-        
-        <!-- Financial Services -->
-        <span class="skill">Cash Handling</span>
-        <span class="skill">Financial Transactions</span>
-        
-        <!-- Teaching/Training -->
-        <span class="skill">Instructional Techniques</span>
-        <span class="skill">Language Instruction</span>
-        
-        <!-- Volunteer/Community -->
-        <span class="skill">Community Outreach</span>
-        <span class="skill">Nonprofit Operations</span>
-    </div>
-</div>
+        <div class="resume-content" id="resume-content">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills">
+                <!-- Technical Skills -->
+                <span class="skill">Technical Support</span>
+                <span class="skill">Cybersecurity</span>
+                <span class="skill">POS Terminals</span>
+                <span class="skill">Microsoft Dynamics AX</span>
+                <span class="skill">Zendesk</span>
+                <span class="skill">Customer Relationship Management (CRM)</span>
+                <span class="skill">Help Desk Support</span>
+                <span class="skill">Microsoft Office Suite</span>
+                
+                <!-- Communication/Marketing -->
+                <span class="skill">Communication Specialist</span>
+                <span class="skill">Social Media Marketing</span>
+                <span class="skill">Social Media Management</span>
+                <span class="skill">Content Creation</span>
+                <span class="skill">Public Speaking</span>
+                <span class="skill">Bilingual (English/French)</span>
+                
+                <!-- Analytical -->
+                <span class="skill">Trend Analysis</span>
+                <span class="skill">Data Analysis</span>
+                
+                <!-- Leadership/Management -->
+                <span class="skill">Leadership</span>
+                <span class="skill">Team Collaboration</span>
+                <span class="skill">Event Coordination</span>
+                
+                <!-- Customer Service -->
+                <span class="skill">Customer Engagement</span>
+                <span class="skill">Problem Solving</span>
+                <span class="skill">Multitasking</span>
+                
+                <!-- Financial Services -->
+                <span class="skill">Cash Handling</span>
+                <span class="skill">Financial Transactions</span>
+                
+                <!-- Teaching/Training -->
+                <span class="skill">Instructional Techniques</span>
+                <span class="skill">Language Instruction</span>
+                
+                <!-- Volunteer/Community -->
+                <span class="skill">Community Outreach</span>
+                <span class="skill">Nonprofit Operations</span>
+            </div>
             
             <h2 class="section-title">Work Experience</h2>
             
@@ -261,65 +257,6 @@
             </div>
         </div>
     </div>
-    <script>
-        // Theme toggle functionality
-        const themeToggle = document.getElementById('theme-toggle');
-        const icon = themeToggle.querySelector('i');
-        
-        // Check for saved theme preference or use preferred color scheme
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-        const currentTheme = localStorage.getItem('theme');
-        
-        if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
-            document.body.classList.add('dark-theme');
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            const theme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            
-            if (document.body.classList.contains('dark-theme')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-        });
-        
-        // Resume toggle functionality
-        const resumeButton = document.getElementById('resume-button');
-        const resumeContent = document.getElementById('resume-content');
-        
-        resumeButton.addEventListener('click', () => {
-            resumeContent.classList.toggle('show-resume');
-            if (resumeContent.classList.contains('show-resume')) {
-                resumeButton.textContent = 'Hide Resume';
-                // Smooth scroll to the resume content after fade-in starts
-                setTimeout(() => {
-                    resumeContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-            } else {
-                resumeButton.textContent = 'View Resume';
-                // Scroll back to top after fade-out completes
-                setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }, 300);
-            }
-        });
-        
-        // Close resume when clicking on a nav link
-        document.querySelectorAll('.social-link').forEach(link => {
-            link.addEventListener('click', () => {
-                if (resumeContent.classList.contains('show-resume')) {
-                    resumeContent.classList.remove('show-resume');
-                    resumeButton.textContent = 'View Resume';
-                }
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
