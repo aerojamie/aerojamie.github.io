@@ -95,14 +95,15 @@ a:hover {
 /* ===== SHARED COMPONENTS (Header, Intro, Bio, Social) ===== */
 .intro {
     /* Container for header, bio, social links if needed */
+    margin-bottom: var(--section-spacing); /* Add space after the whole intro block */
 }
 
-header { /* Used within .intro */
+header { /* Used within .intro - MODIFIED FOR DROPDOWN PLACEMENT */
     display: flex;
-    align-items: center;
-    gap: 2rem;
+    align-items: flex-start; /* Align items to the top */
+    gap: 1.5rem; /* Adjusted gap */
     margin-bottom: var(--element-spacing);
-    flex-wrap: wrap;
+    flex-wrap: wrap; 
 }
 
 .avatar {
@@ -113,23 +114,34 @@ header { /* Used within .intro */
     border: 4px solid var(--accent);
     box-shadow: var(--card-shadow);
     transition: transform 0.3s ease;
+    flex-shrink: 0; /* Prevent avatar from shrinking if space is tight */
 }
 
 .avatar:hover {
     transform: scale(1.05);
 }
 
-.header-text {
-    flex: 1;
+.header-text { /* MODIFIED */
+    flex-grow: 1; /* Allows text to take available space, pushing dropdown right */
     min-width: 250px;
 }
 
 .contact-info {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1rem; /* Spacing between contact items */
+    row-gap: 0.5rem; /* Spacing for wrapped items */
     color: var(--text-light);
     margin: 0.5rem 0;
+    font-size: 0.9rem; /* Slightly smaller contact info */
+}
+.contact-info div {
+    display: flex;
+    align-items: center;
+}
+.contact-info i {
+    margin-right: 0.5em;
+    color: var(--accent); /* Make icons yellow */
 }
 .contact-info a {
     color: var(--text-light);
@@ -143,6 +155,7 @@ header { /* Used within .intro */
     background-color: var(--secondary);
     padding: 1.5rem;
     border-radius: 10px;
+    margin-top: var(--element-spacing); /* Ensure space if header wraps*/
     margin-bottom: var(--element-spacing);
     border-left: 4px solid var(--accent);
     box-shadow: var(--card-shadow);
@@ -151,7 +164,7 @@ header { /* Used within .intro */
 .social-links { /* Used within .intro */
     display: flex;
     gap: 1.5rem;
-    margin: 2rem 0;
+    margin: 2rem 0 0 0; /* Margin top, remove bottom if .intro has margin-bottom */
     flex-wrap: wrap;
     justify-content: center;
 }
@@ -167,48 +180,50 @@ header { /* Used within .intro */
     transform: scale(1.2);
 }
 
-/* ===== DROPDOWN NAVIGATION ===== */
-.dropdown-nav-container {
-    display: flex;
-    justify-content: center;
-    margin: 2rem auto; /* Space around the dropdown */
-    padding-bottom: 1.5rem;
-    border-bottom: 2px solid var(--border); /* Separator line */
+/* ===== DROPDOWN NAVIGATION (Positioned in Header) ===== */
+.dropdown-nav-container.header-dropdown {
+    margin: 0; /* Reset margin */
+    padding: 0; /* Reset padding */
+    border-bottom: none; /* Remove separator line */
+    margin-left: auto; /* Pushes the dropdown to the right of other flex items */
+    align-self: center; /* Vertically align dropdown with header text content */
+    flex-shrink: 0; /* Prevent dropdown from shrinking */
 }
 
 .modern-dropdown {
     background-color: var(--secondary);
     color: var(--text);
     border: 1px solid var(--border);
-    padding: 0.75rem 1.5rem;
-    border-radius: 25px; 
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px; 
     font-family: 'Inter', sans-serif;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Slightly smaller for header context */
     cursor: pointer;
-    -webkit-appearance: none; /* Remove default system appearance */
+    -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    /* Custom arrow icon (yellow to match accent) */
     background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFD700%22%20d%3D%22M287%2069.4a17.6%2017.6%0A%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 0.8em;
-    padding-right: 3rem; /* Make space for the arrow */
-    min-width: 250px; /* Ensure dropdown isn't too small */
+    background-position: right 0.75rem center;
+    background-size: 0.65em;
+    padding-right: 2.5rem; /* Make space for the arrow */
+    width: 180px; /* Adjust width as needed, or use min-width: auto */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .modern-dropdown:hover {
     border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.3); /* Subtle yellow glow */
 }
 
 .modern-dropdown:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 5px rgba(var(--accent-rgb), 0.5); /* Focus glow */
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5); /* Stronger yellow glow */
 }
 
-/* For accessibility: a visually hidden label for the dropdown */
+/* For accessibility: a visually hidden label */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -223,20 +238,19 @@ header { /* Used within .intro */
 
 /* ===== PAGE-SPECIFIC CONTENT WRAPPER ===== */
 .page-content {
-    padding-top: 1.5rem; /* Space below the dropdown navigation's border */
+    padding-top: 1.5rem; /* Space below the intro/header block */
 }
 
-/* Section Titles (within .page-content or generally) */
+/* Section Titles */
 .section-title {
     color: var(--accent);
     border-bottom: 2px solid var(--border);
     padding-bottom: 0.5rem;
     margin-bottom: 1.5rem; 
 }
-/* Adjust margin for the first section title on a page */
 .page-content > .section-title:first-child,
-.page-content > div > .section-title:first-child, /* if wrapped in a div like two-column */
-.page-content > section > .section-title:first-child {
+.page-content > section:first-of-type > .section-title:first-child, /* if content is in <section> tags */
+.page-content > div:first-of-type > .section-title:first-child { /* if content is in <div> tags like two-column */
     margin-top: 0; 
 }
 
@@ -311,7 +325,7 @@ header { /* Used within .intro */
 }
 .item-description ul {
     list-style-position: outside;
-    padding-left: 1.2rem; /* Indent bullet points */
+    padding-left: 1.2rem;
 }
 .item-description ul li {
     margin-bottom: 0.5rem;
@@ -320,12 +334,12 @@ header { /* Used within .intro */
 .two-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem; /* Gap between columns */
-    margin-top: var(--section-spacing); /* Space above the two-column section */
-    margin-bottom: var(--section-spacing); /* Space below the two-column section */
+    gap: 2rem;
+    margin-top: var(--section-spacing);
+    margin-bottom: var(--section-spacing);
 }
 .two-column > div > .section-title:first-child {
-    margin-top: 0; /* First section title within a column */
+    margin-top: 0;
 }
 
 
@@ -334,13 +348,13 @@ header { /* Used within .intro */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
-    padding: 1rem 0; /* Padding for the gallery itself */
+    padding: 1rem 0;
 }
 
 .photo-item {
     background-color: var(--secondary);
     border-radius: 8px;
-    overflow: hidden; /* Ensures image respects border-radius */
+    overflow: hidden;
     box-shadow: var(--card-shadow);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -353,9 +367,9 @@ header { /* Used within .intro */
 .photo-item img {
     display: block;
     width: 100%;
-    height: 220px; /* Or adjust to your preference */
-    object-fit: cover; /* Crop to fit */
-    border-bottom: 3px solid var(--accent); /* Accent line */
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--accent);
 }
 
 /* ===== CODING PROJECTS SECTION STYLING ===== */
@@ -372,7 +386,7 @@ header { /* Used within .intro */
     border-radius: 10px;
     box-shadow: var(--card-shadow);
     display: flex;
-    flex-direction: column; /* Stack content vertically */
+    flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-left: 4px solid var(--accent);
 }
@@ -384,14 +398,14 @@ header { /* Used within .intro */
 
 .project-thumbnail {
     width: 100%;
-    height: 180px; /* Adjust as needed */
+    height: 180px;
     object-fit: cover;
     border-radius: 6px;
     margin-bottom: 1rem;
 }
 
-.project-item h3 { /* Already styled by general h3, but can override if needed */
-    color: var(--text); /* Or var(--accent) */
+.project-item h3 {
+    color: var(--text);
     margin-top: 0;
     margin-bottom: 0.75rem;
     font-size: 1.3rem;
@@ -401,12 +415,12 @@ header { /* Used within .intro */
     color: var(--text-light);
     font-size: 0.95rem;
     line-height: 1.5;
-    flex-grow: 1; /* Allows description to fill space if cards have varying heights */
+    flex-grow: 1;
     margin-bottom: 1rem;
 }
 
 .project-links {
-    margin-top: auto; /* Pushes links to the bottom of the card */
+    margin-top: auto;
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
@@ -430,7 +444,7 @@ header { /* Used within .intro */
     transform: scale(1.05);
 }
 
-/* Optional: General Button Style (if you add other buttons) */
+/* Optional: General Button Style */
 .modern-button {
     background-color: var(--accent);
     color: var(--text-on-accent);
@@ -442,8 +456,8 @@ header { /* Used within .intro */
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: inline-block; /* Changed from block to be more versatile */
-    margin: 1rem 0; /* Default margin */
+    display: inline-block;
+    margin: 1rem 0;
     box-shadow: var(--button-shadow);
 }
 
@@ -461,25 +475,35 @@ header { /* Used within .intro */
     }
     
     header { /* Within .intro */
-        flex-direction: column;
-        text-align: center;
-        align-items: center;
-    }
-    
-    .two-column {
-        grid-template-columns: 1fr; /* Stack columns */
+        flex-direction: column; /* Stack avatar, text, and dropdown */
+        align-items: center; /* Center items when stacked */
     }
     
     .header-text {
-        text-align: center;
+        text-align: center; /* Center h1 and contact info */
     }
-    
     .contact-info {
-        justify-content: center;
+        justify-content: center; /* Center contact items */
+    }
+
+    .dropdown-nav-container.header-dropdown {
+        margin-left: 0; /* Reset margin for stacking */
+        margin-top: 1.5rem; /* Space above dropdown when stacked */
+        width: 100%; /* Allow container to be full width */
+        display: flex;
+        justify-content: center; /* Center the select element within this container */
+    }
+    .modern-dropdown {
+        width: 90%; /* Or a specific max-width */
+        max-width: 320px; /* Max width for dropdown on smaller screens */
+    }
+
+    .two-column {
+        grid-template-columns: 1fr;
     }
     
     .item-header {
-        flex-direction: column; /* Stack title and date */
+        flex-direction: column;
         align-items: flex-start;
     }
     .item-header .item-date {
@@ -489,15 +513,26 @@ header { /* Used within .intro */
 }
 
 @media (max-width: 480px) {
-    /* Dropdown will naturally reflow, but ensure it doesn't get too wide or small */
-    .modern-dropdown {
-        min-width: 200px; /* Adjust if needed */
-        width: 100%; /* Make dropdown full width within its container */
-        max-width: 300px; /* Prevent it from being overly wide on small screens */
+    h1 {
+        font-size: 2rem; /* Slightly smaller h1 on very small screens */
+    }
+    .modern-dropdown { /* Further refinement if needed */
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        padding-right: 2.2rem; /* Adjust for arrow */
+        width: 100%;
+        max-width: 280px;
     }
 
     .projects-grid, .photography-gallery {
-        grid-template-columns: 1fr; /* Single column for projects/photos */
+        grid-template-columns: 1fr;
+    }
+
+    .social-links {
+        gap: 1rem; /* Slightly reduce gap for social links */
+    }
+    .social-link {
+        font-size: 1.6rem; /* Slightly smaller social icons */
     }
 }
 
