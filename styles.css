@@ -52,7 +52,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     line-height: 1.2;
     margin-bottom: 1rem;
-    color: var(--text); /* Main text color for headings */
+    color: var(--text);
 }
 
 h1 {
@@ -62,7 +62,7 @@ h1 {
 
 h2 {
     font-size: 1.8rem;
-    margin-top: var(--section-spacing);
+    margin-top: var(--section-spacing); /* Default top margin for H2 */
 }
 
 h3 {
@@ -107,7 +107,7 @@ header {
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid var(--accent); /* Accent color for avatar border */
+    border: 4px solid var(--accent);
     box-shadow: var(--card-shadow);
     transition: transform 0.3s ease;
 }
@@ -129,13 +129,12 @@ header {
     margin: 0.5rem 0;
 }
 .contact-info a {
-    color: var(--text-light); /* Keep contact links consistent with surrounding text or make them accent */
+    color: var(--text-light);
     transition: color 0.3s ease;
 }
 .contact-info a:hover {
     color: var(--accent);
 }
-
 
 /* Bio Section */
 .bio {
@@ -143,17 +142,19 @@ header {
     padding: 1.5rem;
     border-radius: 10px;
     margin-bottom: var(--element-spacing);
-    border-left: 4px solid var(--accent); /* Accent color for bio border */
+    border-left: 4px solid var(--accent);
     box-shadow: var(--card-shadow);
 }
 
 /* Section Titles */
 .section-title {
-    color: var(--accent); /* Accent color for section titles */
+    color: var(--accent);
     border-bottom: 2px solid var(--border);
     padding-bottom: 0.5rem;
-    margin: var(--section-spacing) 0 1.5rem 0;
+    margin-bottom: 1.5rem; /* Consistent bottom margin for section titles */
 }
+/* H2s that are section titles might have their top margin adjusted by .portfolio-content .section-title */
+
 
 /* Skills */
 .skills {
@@ -170,12 +171,12 @@ header {
     font-size: 0.9rem;
     box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
-    color: var(--text-light); /* Default text color for skills */
+    color: var(--text-light);
 }
 
 .skill:hover {
     background-color: var(--accent);
-    color: var(--text-on-accent); /* Black text on yellow hover */
+    color: var(--text-on-accent);
     transform: translateY(-2px);
 }
 
@@ -195,7 +196,7 @@ header {
 .education-item:hover,
 .certificate-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.35), 0 0 15px rgba(var(--accent-rgb), 0.05); /* Add subtle glow on hover */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.35), 0 0 15px rgba(var(--accent-rgb), 0.05);
 }
 
 .item-header {
@@ -208,7 +209,7 @@ header {
 
 .item-title {
     font-weight: 600;
-    color: var(--text); /* Main text color for item titles */
+    color: var(--text);
 }
 
 .item-date {
@@ -226,7 +227,7 @@ header {
 }
 .item-description ul {
     list-style-position: outside;
-    padding-left: 1.2rem; /* Add padding for bullet points */
+    padding-left: 1.2rem;
 }
 .item-description ul li {
     margin-bottom: 0.5rem;
@@ -240,30 +241,30 @@ header {
     gap: 2rem;
 }
 
-/* Social Links */
+/* Social Links in Intro */
 .social-links {
     display: flex;
     gap: 1.5rem;
-    margin: 2rem 0;
+    margin: 2rem 0; /* Or adjust as needed for intro section */
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: center; /* Center if in intro block */
 }
 
 .social-link {
-    color: var(--text); /* Default color for social icons */
+    color: var(--text);
     font-size: 1.8rem;
     transition: all 0.3s ease;
 }
 
 .social-link:hover {
-    color: var(--accent); /* Accent color on hover */
+    color: var(--accent);
     transform: scale(1.2);
 }
 
-/* Button */
-.modern-button {
+/* Button (General - if any remain or are added elsewhere) */
+.modern-button { /* This was the old resume button, styles kept if needed elsewhere */
     background-color: var(--accent);
-    color: var(--text-on-accent); /* Black text on yellow button */
+    color: var(--text-on-accent);
     border: none;
     padding: 0.8rem 1.8rem;
     border-radius: 30px;
@@ -280,20 +281,181 @@ header {
 .modern-button:hover {
     background-color: var(--accent-hover);
     transform: translateY(-2px);
-    box-shadow: var(--button-hover-shadow), 0 0 10px rgba(var(--accent-rgb), 0.2); /* Enhanced shadow and subtle glow */
+    box-shadow: var(--button-hover-shadow), 0 0 10px rgba(var(--accent-rgb), 0.2);
 }
 
-/* Resume Content Toggle */
-#resume-content {
+
+/* ===== TAB NAVIGATION ===== */
+.portfolio-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem auto;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.nav-tab {
+    background-color: var(--secondary);
+    color: var(--text-light);
+    border: 1px solid var(--border);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: none;
+}
+
+.nav-tab:hover {
+    background-color: var(--accent-hover);
+    color: var(--text-on-accent);
+    border-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--button-shadow);
+}
+
+.nav-tab.active {
+    background-color: var(--accent);
+    color: var(--text-on-accent);
+    border-color: var(--accent);
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(var(--accent-rgb), 0.2), var(--button-shadow);
+    transform: translateY(-1px);
+}
+
+/* ===== PORTFOLIO CONTENT SECTIONS ===== */
+#tab-content-container {
+    padding-top: 1rem;
+}
+
+.portfolio-content {
     display: none;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease-in-out;
+    background-color: transparent;
+    padding: 0; 
+    border-radius: 10px;
 }
 
-#resume-content.show {
-    display: block; /* This will be handled by JS, but opacity is the key for transition */
+.portfolio-content.show {
+    display: block;
     opacity: 1;
 }
+
+.portfolio-content .section-title {
+    margin-top: 0; /* First section title in a tab does not need the large global H2 top margin */
+}
+.portfolio-content .section-title:not(:first-child) {
+    margin-top: var(--section-spacing); /* Subsequent section titles in the same tab get the space */
+}
+
+
+/* ===== PHOTOGRAPHY SECTION STYLING ===== */
+.photography-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.photo-item {
+    background-color: var(--secondary);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.photo-item:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3), 0 0 15px rgba(var(--accent-rgb),0.1);
+}
+
+.photo-item img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--accent);
+}
+
+/* ===== CODING PROJECTS SECTION STYLING ===== */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.project-item {
+    background-color: var(--secondary);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 4px solid var(--accent);
+}
+
+.project-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3), 0 0 15px rgba(var(--accent-rgb),0.1);
+}
+
+.project-thumbnail {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.project-item h3 {
+    color: var(--text);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1.3rem;
+}
+
+.project-description {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex-grow: 1;
+    margin-bottom: 1rem;
+}
+
+.project-links {
+    margin-top: auto;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap; /* Ensure links wrap if space is tight */
+}
+
+.project-link {
+    display: inline-block;
+    background-color: var(--accent);
+    color: var(--text-on-accent);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.project-link:hover {
+    background-color: var(--accent-hover);
+    color: var(--text-on-accent);
+    transform: scale(1.05);
+}
+
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
@@ -321,10 +483,24 @@ header {
     
     .item-header {
         flex-direction: column;
+        align-items: flex-start; /* Align items to start in column mode */
     }
-    
-    .item-date {
-        margin-top: 0.3rem;
+    .item-header .item-date {
+         align-self: flex-start; /* Ensure date stays with title */
+         margin-top: 0.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .portfolio-nav {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .nav-tab {
+        text-align: center;
+    }
+    .projects-grid, .photography-gallery {
+        grid-template-columns: 1fr; /* Stack items in a single column */
     }
 }
 
