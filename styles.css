@@ -367,7 +367,7 @@ header { /* Used within .intro - MODIFIED FOR DROPDOWN PLACEMENT */
 .photo-item img {
     display: block;
     width: 100%;
-    height: 220px;
+    height: 400px;
     object-fit: cover;
     border-bottom: 3px solid var(--accent);
 }
