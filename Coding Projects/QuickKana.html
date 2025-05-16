@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickKana Web</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #2E2E2E;
+            color: #F0F0F0;
+            display: flex;
+            flex-direction: column; /* Ensure footer is at the bottom */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem; /* Added padding for smaller screens */
+        }
+        .container {
+            background-color: #3A3A3A;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 800px; /* Max width for larger screens */
+            text-align: center;
+            margin-bottom: auto; /* Pushes container to top if content is short */
+        }
+        .kana-char {
+            font-size: 6rem; /* Responsive font size */
+            font-weight: bold;
+            margin: 2rem 0;
+            color: #FFFFFF;
+            line-height: 1.2; /* Ensure character is not cut off */
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            border: none;
+            margin: 0.5rem;
+        }
+        .btn-primary {
+            background-color: #4A4A4A;
+            color: #F0F0F0;
+        }
+        .btn-primary:hover {
+            background-color: #5B5B5B;
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .btn-option {
+            background-color: #4A4A4A;
+            color: #F0F0F0;
+            min-width: 120px; /* Ensure buttons have a decent width */
+        }
+        .btn-option:hover {
+            background-color: #5B5B5B;
+        }
+        .btn-option:active {
+            transform: scale(0.98);
+        }
+        .btn-option:disabled {
+            background-color: #333333;
+            color: #777777;
+            cursor: not-allowed;
+        }
+        .btn-mode {
+            background-color: #4A4A4A;
+            color: #F0F0F0;
+            margin: 0.5rem;
+        }
+        .btn-mode.selected {
+            background-color: #6B6B6B;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .btn-mode:hover {
+            background-color: #5B5B5B;
+        }
+        .result-correct {
+            color: #4CAF50; /* Green */
+            font-weight: bold;
+        }
+        .result-wrong {
+            color: #F44336; /* Red */
+            font-weight: bold;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .kana-char {
+                font-size: 4rem;
+            }
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+            .container {
+                padding: 1.5rem;
+            }
+            .mode-buttons button, .answer-buttons button {
+                width: calc(50% - 1rem); /* Two buttons per row on small screens */
+            }
+        }
+         @media (max-width: 400px) {
+            .mode-buttons button, .answer-buttons button {
+                width: calc(100% - 1rem); /* One button per row on very small screens */
+            }
+        }
+        footer {
+            margin-top: auto; /* Pushes footer to bottom */
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.875rem; /* 14px */
+            color: #A0A0A0; /* Lighter gray for footer text */
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container" class="container">
+        <div id="start-screen">
+            <h1 class="text-5xl font-bold mb-8">QuickKana</h1>
+            <div class="mb-8">
+                <h2 class="text-2xl mb-4">Choose a mode:</h2>
+                <div id="mode-selection" class="flex flex-wrap justify-center gap-2 mode-buttons">
+                    <button class="btn btn-mode" data-mode="Hiragana">Hiragana (あ)</button>
+                    <button class="btn btn-mode" data-mode="Katakana">Katakana (ア)</button>
+                    <button class="btn btn-mode" data-mode="HiraganaPlus">Hiragana + (がゃ)</button>
+                    <button class="btn btn-mode" data-mode="KatakanaPlus">Katakana + (ガャ)</button>
+                </div>
+            </div>
+            <button id="start-button" class="btn btn-primary text-2xl px-8 py-4">Start</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <button id="back-button" class="btn btn-primary">&larr; Back to Menu</button>
+                <div id="streak-label" class="text-xl font-semibold">Streak: 0</div>
+            </div>
+            <div id="question-label" class="kana-char">あ</div>
+            <div id="buttons-frame" class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8 answer-buttons">
+                </div>
+            <div id="result-label" class="text-xl h-8 mt-4"></div> </div>
+    </div>
+
+    <footer>
+        Made by Jamie Sessions
+    </footer>
+
+    <script>
+        // Kana Dictionaries
+        const hiragana_dict = {
+            'あ': 'a', 'い': 'i', 'う': 'u', 'え': 'e', 'お': 'o',
+            'か': 'ka', 'き': 'ki', 'く': 'ku', 'け': 'ke', 'こ': 'ko',
+            'さ': 'sa', 'し': 'shi', 'す': 'su', 'せ': 'se', 'そ': 'so',
+            'た': 'ta', 'ち': 'chi', 'つ': 'tsu', 'て': 'te', 'と': 'to',
+            'な': 'na', 'に': 'ni', 'ぬ': 'nu', 'ね': 'ne', 'の': 'no',
+            'は': 'ha', 'ひ': 'hi', 'ふ': 'fu', 'へ': 'he', 'ほ': 'ho',
+            'ま': 'ma', 'み': 'mi', 'む': 'mu', 'め': 'me', 'も': 'mo',
+            'や': 'ya', 'ゆ': 'yu', 'よ': 'yo',
+            'ら': 'ra', 'り': 'ri', 'る': 'ru', 'れ': 're', 'ろ': 'ro',
+            'わ': 'wa', 'を': 'wo', 'ん': 'n'
+        };
+
+        const hiragana_plus_dict = {
+            ...hiragana_dict,
+            'が': 'ga', 'ぎ': 'gi', 'ぐ': 'gu', 'げ': 'ge', 'ご': 'go',
+            'ざ': 'za', 'じ': 'ji', 'ず': 'zu', 'ぜ': 'ze', 'ぞ': 'zo',
+            'だ': 'da', 'ぢ': 'ji', 'づ': 'zu', 'で': 'de', 'ど': 'do',
+            'ば': 'ba', 'び': 'bi', 'ぶ': 'bu', 'べ': 'be', 'ぼ': 'bo',
+            'ぱ': 'pa', 'ぴ': 'pi', 'ぷ': 'pu', 'ぺ': 'pe', 'ぽ': 'po',
+            'きゃ': 'kya', 'きゅ': 'kyu', 'きょ': 'kyo',
+            'しゃ': 'sha', 'しゅ': 'shu', 'しょ': 'sho',
+            'ちゃ': 'cha', 'ちゅ': 'chu', 'ちょ': 'cho',
+            'にゃ': 'nya', 'にゅ': 'nyu', 'にょ': 'nyo',
+            'ひゃ': 'hya', 'ひゅ': 'hyu', 'ひょ': 'hyo',
+            'みゃ': 'mya', 'みゅ': 'myu', 'みょ': 'myo',
+            'りゃ': 'rya', 'りゅ': 'ryu', 'りょ': 'ryo',
+            'ぎゃ': 'gya', 'ぎゅ': 'gyu', 'ぎょ': 'gyo',
+            'じゃ': 'ja', 'じゅ': 'ju', 'じょ': 'jo',
+            'びゃ': 'bya', 'びゅ': 'byu', 'びょ': 'byo',
+            'ぴゃ': 'pya', 'ぴゅ': 'pyu', 'ぴょ': 'pyo'
+        };
+
+        const katakana_dict = {
+            'ア': 'a', 'イ': 'i', 'ウ': 'u', 'エ': 'e', 'オ': 'o',
+            'カ': 'ka', 'キ': 'ki', 'ク': 'ku', 'ケ': 'ke', 'コ': 'ko',
+            'サ': 'sa', 'シ': 'shi', 'ス': 'su', 'セ': 'se', 'ソ': 'so',
+            'タ': 'ta', 'チ': 'chi', 'ツ': 'tsu', 'テ': 'te', 'ト': 'to',
+            'ナ': 'na', 'ニ': 'ni', 'ヌ': 'nu', 'ネ': 'ne', 'ノ': 'no',
+            'ハ': 'ha', 'ヒ': 'hi', 'フ': 'fu', 'ヘ': 'he', 'ホ': 'ho',
+            'マ': 'ma', 'ミ': 'mi', 'ム': 'mu', 'メ': 'me', 'モ': 'mo',
+            'ヤ': 'ya', 'ユ': 'yu', 'ヨ': 'yo', 'ラ': 'ra', 'リ': 'ri',
+            'ル': 'ru', 'レ': 're', 'ロ': 'ro', 'ワ': 'wa', 'ヲ': 'wo', 'ン': 'n'
+        };
+
+        const katakana_plus_dict = {
+            ...katakana_dict,
+            'ガ': 'ga', 'ギ': 'gi', 'グ': 'gu', 'ゲ': 'ge', 'ゴ': 'go',
+            'ザ': 'za', 'ジ': 'ji', 'ズ': 'zu', 'ゼ': 'ze', 'ゾ': 'zo',
+            'ダ': 'da', 'ヂ': 'ji', 'ヅ': 'zu', 'デ': 'de', 'ド': 'do',
+            'バ': 'ba', 'ビ': 'bi', 'ブ': 'bu', 'ベ': 'be', 'ボ': 'bo',
+            'パ': 'pa', 'ピ': 'pi', 'プ': 'pu', 'ペ': 'pe', 'ポ': 'po',
+            'キャ': 'kya', 'キュ': 'kyu', 'キョ': 'kyo',
+            'シャ': 'sha', 'シュ': 'shu', 'ショ': 'sho',
+            'チャ': 'cha', 'チュ': 'chu', 'チョ': 'cho',
+            'ニャ': 'nya', 'ニュ': 'nyu', 'ニョ': 'nyo',
+            'ヒャ': 'hya', 'ヒュ': 'hyu', 'ヒョ': 'hyo',
+            'ミャ': 'mya', 'ミュ': 'myu', 'ミョ': 'myo',
+            'リャ': 'rya', 'リュ': 'ryu', 'リョ': 'ryo',
+            'ギャ': 'gya', 'ギュ': 'gyu', 'ギョ': 'gyo',
+            'ジャ': 'ja', 'ジュ': 'ju', 'ジョ': 'jo',
+            'ビャ': 'bya', 'ビュ': 'byu', 'ビョ': 'byo',
+            'ピャ': 'pya', 'ピュ': 'pyu', 'ピョ': 'pyo'
+        };
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const modeSelectionButtons = document.querySelectorAll('#mode-selection .btn-mode');
+        const startButton = document.getElementById('start-button');
+        const backButton = document.getElementById('back-button');
+        const streakLabel = document.getElementById('streak-label');
+        const questionLabel = document.getElementById('question-label');
+        const buttonsFrame = document.getElementById('buttons-frame');
+        const resultLabel = document.getElementById('result-label');
+
+        // App State
+        let currentCharacterSet = {};
+        let selectedModeName = '';
+        let streakCount = 0;
+        let currentKana = '';
+        let correctAnswer = '';
+        let options = [];
+        let answerButtons = [];
+
+        // --- Event Listeners ---
+
+        // Mode selection
+        modeSelectionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                modeSelectionButtons.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                selectedModeName = button.dataset.mode;
+            });
+        });
+        // Default selection: Select the first mode button if available.
+        if (modeSelectionButtons.length > 0) {
+            modeSelectionButtons[0].click(); 
+        }
+
+
+        // Start quiz
+        startButton.addEventListener('click', () => {
+            if (!selectedModeName) {
+                // A more user-friendly message display could be implemented here instead of alert.
+                // For now, using a styled message box or inline text.
+                const tempMsgBox = document.createElement('div');
+                tempMsgBox.textContent = "Please select a mode first!";
+                tempMsgBox.style.position = 'fixed';
+                tempMsgBox.style.top = '20px';
+                tempMsgBox.style.left = '50%';
+                tempMsgBox.style.transform = 'translateX(-50%)';
+                tempMsgBox.style.backgroundColor = '#F44336'; // Red
+                tempMsgBox.style.color = 'white';
+                tempMsgBox.style.padding = '1rem';
+                tempMsgBox.style.borderRadius = '0.5rem';
+                tempMsgBox.style.zIndex = '1000';
+                document.body.appendChild(tempMsgBox);
+                setTimeout(() => {
+                    tempMsgBox.remove();
+                }, 3000);
+                return;
+            }
+            switch (selectedModeName) {
+                case 'Hiragana': currentCharacterSet = hiragana_dict; break;
+                case 'Katakana': currentCharacterSet = katakana_dict; break;
+                case 'HiraganaPlus': currentCharacterSet = hiragana_plus_dict; break;
+                case 'KatakanaPlus': currentCharacterSet = katakana_plus_dict; break;
+                default: currentCharacterSet = hiragana_dict; // Fallback
+            }
+            
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            streakCount = 0; // Reset streak for new game
+            updateStreakDisplay();
+            setupQuizScreen(); // Ensure buttons are created before the first question
+            nextQuestion();
+        });
+
+        // Back to menu
+        backButton.addEventListener('click', () => {
+            quizScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            resultLabel.textContent = ''; // Clear result when going back
+        });
+
+        // --- Quiz Logic ---
+
+        function setupQuizScreen() {
+            buttonsFrame.innerHTML = ''; // Clear old buttons
+            answerButtons = []; // Reset the array
+            for (let i = 0; i < 4; i++) {
+                const button = document.createElement('button');
+                button.classList.add('btn', 'btn-option', 'text-xl');
+                // The event listener now correctly refers to the button's text content at the time of click
+                button.addEventListener('click', (event) => checkAnswer(event.target.textContent));
+                buttonsFrame.appendChild(button);
+                answerButtons.push(button);
+            }
+        }
+
+        function nextQuestion() {
+            resultLabel.textContent = '';
+            resultLabel.className = 'text-xl h-8 mt-4'; // Reset color classes
+
+            // Ensure character set has keys before proceeding
+            const allKana = Object.keys(currentCharacterSet);
+            if (allKana.length === 0) {
+                console.error("Character set is empty. Cannot pick a question.");
+                questionLabel.textContent = '?'; // Indicate an error or empty state
+                // Optionally, disable answer buttons or show an error message
+                answerButtons.forEach(button => {
+                    button.textContent = '-';
+                    button.disabled = true;
+                });
+                return;
+            }
+            const allRomaji = Object.values(currentCharacterSet);
+            
+            currentKana = allKana[Math.floor(Math.random() * allKana.length)];
+            correctAnswer = currentCharacterSet[currentKana];
+            
+            questionLabel.textContent = currentKana;
+
+            options = [correctAnswer];
+            // Ensure there are enough unique romaji options if the set is small
+            const uniqueRomaji = [...new Set(allRomaji)];
+
+            while (options.length < 4 && options.length < uniqueRomaji.length) {
+                const wrongAnswer = uniqueRomaji[Math.floor(Math.random() * uniqueRomaji.length)];
+                if (!options.includes(wrongAnswer)) {
+                    options.push(wrongAnswer);
+                }
+            }
+            // If still not enough options (e.g., character set has < 4 unique romaji), fill with placeholders or repeat
+            while (options.length < 4) {
+                options.push("..."); // Placeholder for missing options
+            }
+
+            shuffleArray(options);
+
+            answerButtons.forEach((button, index) => {
+                button.textContent = options[index];
+                button.disabled = false;
+            });
+        }
+
+        function checkAnswer(selectedAnswer) {
+            answerButtons.forEach(button => button.disabled = true); // Disable buttons after answer
+
+            if (selectedAnswer === correctAnswer) {
+                streakCount++;
+                resultLabel.textContent = "Correct! (正解！)";
+                resultLabel.classList.add('result-correct');
+            } else {
+                streakCount = 0;
+                resultLabel.textContent = `Wrong! (不正解) Correct: ${correctAnswer}`;
+                resultLabel.classList.add('result-wrong');
+            }
+            updateStreakDisplay();
+
+            setTimeout(nextQuestion, 2000); // Wait 2 seconds then show next question
+        }
+
+        function updateStreakDisplay() {
+            streakLabel.textContent = `Streak: ${streakCount}`;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    </script>
+</body>
+</html>
