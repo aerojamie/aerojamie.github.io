@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Ohm's Law & Power Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6; /* Blue thumb */
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .slider-thumb::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #3b82f6; /* Blue thumb */
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem; /* 24px */
+            margin-bottom: 1.5rem; /* 24px */
+        }
+        .output-value {
+            font-size: 1.875rem; /* 30px */
+            font-weight: 700;
+            color: #1e40af; /* Darker blue */
+        }
+        .unit {
+            font-size: 1rem; /* 16px */
+            color: #4b5563; /* Gray */
+            margin-left: 0.25rem; /* 4px */
+        }
+        .circuit-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 20px;
+            background-color: #e5e7eb; /* Lighter gray for circuit bg */
+            border-radius: 0.5rem;
+            min-height: 150px;
+            margin-top: 1.5rem;
+        }
+        .battery {
+            width: 60px;
+            height: 90px;
+            border: 3px solid #374151; /* Dark gray border */
+            border-radius: 5px;
+            position: relative;
+            background-color: #d1d5db; /* Gray fill */
+        }
+        .battery::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 8px;
+            background-color: #4b5563; /* Darker gray terminal */
+            border-radius: 3px 3px 0 0;
+        }
+        .battery-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .plus-minus {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5px;
+            box-sizing: border-box;
+        }
+        .plus-minus .plus {
+            top: 5px;
+            left: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ef4444; /* Red for plus */
+        }
+        .plus-minus .minus {
+            bottom: 5px;
+            right: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3b82f6; /* Blue for minus */
+        }
+        .wire {
+            height: 4px;
+            background-color: #4b5563; /* Dark gray wire */
+            flex-grow: 1;
+            position: relative;
+        }
+        .current-flow {
+            position: absolute;
+            top: -3px; /* Adjust to center on the wire */
+            left: 0;
+            width: 10px; /* Width of each dot */
+            height: 10px; /* Height of each dot */
+            background-color: #f59e0b; /* Amber for current */
+            border-radius: 50%;
+            animation: flow 2s linear infinite;
+            opacity: 0; /* Hidden by default, shown by JS */
+        }
+        @keyframes flow {
+            0% { transform: translateX(0px); }
+            100% { transform: translateX(calc(100% + 200px)); } /* Ensure it flows off screen */
+        }
+
+        .resistor {
+            width: 80px;
+            height: 30px;
+            border: 3px solid #374151;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background-color: #f9fafb; /* Off-white */
+            position: relative;
+        }
+         .resistor-symbol {
+            width: 60px;
+            height: 20px;
+            position: relative;
+            border-left: 3px solid #374151;
+            border-right: 3px solid #374151;
+        }
+        .resistor-symbol::before, .resistor-symbol::after {
+            content: '';
+            position: absolute;
+            height: 3px;
+            background-color: #374151;
+        }
+        .resistor-symbol::before {
+            width: 100%;
+            top: 0;
+            left: 0;
+            transform: skewY(15deg);
+        }
+        .resistor-symbol::after {
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            transform: skewY(-15deg);
+        }
+        /* Simplified resistor symbol using zig-zag path */
+        .resistor-path {
+            stroke: #374151;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .light-bulb {
+            width: 60px;
+            height: 60px;
+            background-color: #eab308; /* Yellow bulb, changes with power */
+            border-radius: 50% 50% 20% 20%;
+            border: 3px solid #a16207; /* Darker yellow border */
+            position: relative;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .light-bulb-base {
+            width: 30px;
+            height: 20px;
+            background-color: #78716c; /* Gray base */
+            position: absolute;
+            bottom: -18px; /* Positions base extending below the bulb div */
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 0 0 5px 5px;
+            border: 2px solid #57534e;
+        }
+        .light-off {
+            background-color: #d1d5db; /* Dim gray when off */
+            box-shadow: none;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 220px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the element */
+            left: 50%;
+            margin-left: -110px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem; /* 14px */
+            line-height: 1.25rem; /* 20px */
+        }
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* Arrow at the bottom */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .circuit-container {
+                flex-direction: column;
+                gap: 20px; /* Space between items when stacked */
+            }
+            .wire {
+                width: 4px; /* Vertical wire */
+                height: 30px; /* Length of vertical wire */
+                flex-grow: 0;
+            }
+            .current-flow {
+                animation-name: flow-vertical; /* Switch to vertical animation */
+            }
+            @keyframes flow-vertical {
+                0% { transform: translateY(0px); }
+                100% { transform: translateY(calc(100% + 50px)); }
+            }
+            .grid-cols-1-md {
+                 grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 769px) {
+             .grid-cols-1-md {
+                 grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 p-4 md:p-8">
+
+    <div class="container mx-auto max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-700">Electricity Playground</h1>
+            <p class="text-lg text-slate-600 mt-2">Explore Volts, Ohms, Amps, and Watts interactively!</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="card">
+                <h2 class="text-2xl font-semibold mb-6 text-blue-600">Controls</h2>
+                <div class="mb-6">
+                    <label for="voltage" class="block text-sm font-medium text-slate-700 mb-1">Voltage (V)</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="range" id="voltage" min="1" max="100" value="12" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        <span id="voltageValue" class="text-lg font-semibold text-blue-700 w-16 text-right">12 V</span>
+                    </div>
+                </div>
+                <div>
+                    <label for="resistance" class="block text-sm font-medium text-slate-700 mb-1">Resistance (R)</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="range" id="resistance" min="1" max="100" value="4" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        <span id="resistanceValue" class="text-lg font-semibold text-blue-700 w-16 text-right">4 Ω</span>
+                    </div>
+                </div>
+                 <button id="resetButton" class="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-150 ease-in-out">
+                    Reset to Defaults
+                </button>
+            </div>
+
+            <div class="card">
+                <h2 class="text-2xl font-semibold mb-6 text-blue-600">Calculated Values</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-sm font-medium text-slate-500">Current (I)</h3>
+                        <p><span id="currentValue" class="output-value">3.00</span><span class="unit">Amps</span></p>
+                        <p class="text-xs text-slate-400">Calculated: I = V / R</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium text-slate-500">Power (P)</h3>
+                        <p><span id="powerValue" class="output-value">36.00</span><span class="unit">Watts</span></p>
+                        <p class="text-xs text-slate-400">Calculated: P = V * I</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-600 text-center">Circuit Visualization</h2>
+            <div class="circuit-container">
+                <div class="flex flex-col items-center">
+                    <div class="battery">
+                        <div class="plus-minus">
+                            <span class="plus">+</span>
+                            <span class="minus">-</span>
+                        </div>
+                    </div>
+                    <span class="mt-1 text-sm font-medium">Battery</span>
+                </div>
+
+                <div class="wire" id="wire1">
+                    <div class="current-flow" id="currentFlow1"></div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <svg width="80" height="30" viewBox="0 0 80 30" class="resistor-svg">
+                        <line x1="0" y1="15" x2="10" y2="15" class="resistor-path"/>
+                        <path d="M10 15 L15 5 L25 25 L35 5 L45 25 L55 5 L65 25 L70 15" class="resistor-path"/>
+                        <line x1="70" y1="15" x2="80" y2="15" class="resistor-path"/>
+                    </svg>
+                    <span id="resistorLabel" class="mt-1 text-sm font-medium">4 Ω Resistor</span>
+                </div>
+
+
+                <div class="wire" id="wire2">
+                     <div class="current-flow" id="currentFlow2"></div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div id="lightBulb" class="light-bulb light-off">
+                        <div class="light-bulb-base"></div>
+                    </div>
+                    <span class="mt-6 text-sm font-medium">Load</span>
+                </div>
+            </div>
+             <p id="circuitMessage" class="text-center text-sm text-slate-500 mt-4"></p>
+        </div>
+
+
+        <div class="card">
+            <h2 class="text-2xl font-semibold mb-6 text-blue-600">What are they?</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                <div class="tooltip">
+                    <h3 class="text-lg font-semibold text-blue-700">Voltage (V)</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Measured in Volts (V). Think of it as the electrical "pressure" or "force" that pushes electrons through a circuit. Higher voltage means more push.</p>
+                    <span class="tooltiptext">Analogy: Water pressure in a hose. More pressure pushes more water.</span>
+                </div>
+                <div class="tooltip">
+                    <h3 class="text-lg font-semibold text-blue-700">Current (I)</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Measured in Amperes (A), or Amps. This is the rate at which electric charge flows past a point in a circuit. It's the "flow rate" of electricity.</p>
+                    <span class="tooltiptext">Analogy: The amount of water flowing through a hose per second.</span>
+                </div>
+                <div class="tooltip">
+                    <h3 class="text-lg font-semibold text-blue-700">Resistance (R)</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Measured in Ohms (Ω). This is the opposition to the flow of current. Higher resistance means it's harder for current to flow.</p>
+                    <span class="tooltiptext">Analogy: A narrow section or blockage in a hose that restricts water flow.</span>
+                </div>
+                <div class="tooltip">
+                    <h3 class="text-lg font-semibold text-blue-700">Power (P)</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Measured in Watts (W). This is the rate at which electrical energy is transferred or consumed by an electrical circuit. It's the "work done" by the electricity.</p>
+                    <span class="tooltiptext">Analogy: The total work the flowing water can do, like turning a water wheel.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-600">Key Formulas</h2>
+            <div class="space-y-3 text-slate-700">
+                <p><strong class="text-blue-700">Ohm's Law:</strong> Voltage = Current × Resistance (V = I × R)</p>
+                <p>This also means: Current = Voltage / Resistance (I = V / R) and Resistance = Voltage / Current (R = V / I).</p>
+                <p><strong class="text-blue-700">Power Law:</strong> Power = Voltage × Current (P = V × I)</p>
+                <p>Other forms: Power = Current² × Resistance (P = I² × R) and Power = Voltage² / Resistance (P = V² / R).</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // DOM Elements
+        const voltageSlider = document.getElementById('voltage');
+        const resistanceSlider = document.getElementById('resistance');
+        const voltageValueDisplay = document.getElementById('voltageValue');
+        const resistanceValueDisplay = document.getElementById('resistanceValue');
+        const currentValueDisplay = document.getElementById('currentValue');
+        const powerValueDisplay = document.getElementById('powerValue');
+        const lightBulb = document.getElementById('lightBulb');
+        const resistorLabel = document.getElementById('resistorLabel');
+        const circuitMessage = document.getElementById('circuitMessage');
+        const currentFlowDots = document.querySelectorAll('.current-flow');
+        const resetButton = document.getElementById('resetButton');
+
+        const DEFAULT_VOLTAGE = 12;
+        const DEFAULT_RESISTANCE = 4;
+
+        // Function to calculate and update everything
+        function updateCircuit() {
+            const voltage = parseFloat(voltageSlider.value);
+            const resistance = parseFloat(resistanceSlider.value);
+
+            // Update display values for sliders
+            voltageValueDisplay.textContent = `${voltage} V`;
+            resistanceValueDisplay.textContent = `${resistance} Ω`;
+            resistorLabel.textContent = `${resistance} Ω Resistor`;
+
+            let current = 0;
+            let power = 0;
+
+            // Calculate current and power
+            // Ohm's Law: I = V / R
+            // Power Law: P = V * I
+            if (resistance > 0) {
+                current = voltage / resistance;
+                power = voltage * current;
+            } else {
+                // Handle division by zero or very low resistance (short circuit scenario)
+                current = Infinity; // Or a very large number
+                power = Infinity;   // Or a very large number
+                // Message is handled in updateVisuals to avoid overwriting specific messages too quickly
+            }
+
+            currentValueDisplay.textContent = resistance > 0 ? current.toFixed(2) : "∞";
+            powerValueDisplay.textContent = resistance > 0 ? power.toFixed(2) : "∞";
+
+            updateVisuals(voltage, resistance, current, power);
+        }
+
+        function updateVisuals(voltage, resistance, current, power) {
+            // Update Light Bulb Brightness (color and shadow)
+            // Normalize power to a scale for brightness (e.g., 0 to 500W)
+            // Max power for visualization purposes, can be adjusted
+            const maxPowerForVisual = 500;
+            let brightness = Math.min(power / maxPowerForVisual, 1); // 0 to 1
+
+            if (resistance <= 0 || voltage <= 0) {
+                brightness = 0; // No light if no resistance or voltage
+            }
+
+            if (brightness > 0.01) { // If there's some power
+                lightBulb.classList.remove('light-off');
+                // Interpolate color from dim yellow to bright yellow/white
+                // Using HSL: Hue (yellowish), Saturation (100%), Lightness (variable)
+                const lightness = 50 + brightness * 40; // from 50% (dim) to 90% (bright)
+                lightBulb.style.backgroundColor = `hsl(50, 100%, ${lightness}%)`;
+                lightBulb.style.boxShadow = `0 0 ${brightness * 20}px ${brightness * 10}px hsla(50, 100%, ${lightness}%, 0.7)`;
+            } else {
+                lightBulb.classList.add('light-off');
+                lightBulb.style.backgroundColor = ''; // Revert to CSS class
+                lightBulb.style.boxShadow = ''; // Revert to CSS class
+            }
+
+            // Update Current Flow Animation Speed
+            // Slower for low current, faster for high current.
+            // Max current for visualization purposes, can be adjusted
+            const maxCurrentForVisual = 25; // e.g. 25 Amps for fastest animation
+            let animationSpeedFactor = 0;
+            if (resistance > 0 && voltage > 0) {
+                animationSpeedFactor = Math.min(current / maxCurrentForVisual, 1);
+            }
+
+            currentFlowDots.forEach(dot => {
+                if (current > 0.01 && resistance > 0) {
+                    dot.style.opacity = '1';
+                    // Duration: faster means smaller number. Base 2s, min 0.2s
+                    const duration = Math.max(0.2, 2 - animationSpeedFactor * 1.8);
+                    dot.style.animationDuration = `${duration}s`;
+                } else {
+                    dot.style.opacity = '0'; // Hide dots if no current
+                }
+            });
+
+
+            // Update circuit message for edge cases
+            if (resistance <= 0) {
+                 circuitMessage.textContent = "Warning: Resistance is zero (short circuit)! Current is theoretically infinite.";
+            } else if (voltage === 0) {
+                circuitMessage.textContent = "No voltage applied. No current will flow, and no power will be consumed.";
+            } else if (current > maxCurrentForVisual * 0.8) { // If current is getting very high
+                circuitMessage.textContent = "High current flow! The circuit is working hard.";
+            }
+             else {
+                circuitMessage.textContent = "Adjust sliders to see changes in current and power.";
+            }
+        }
+
+        // Function to set sliders and update
+        function setValuesAndInitialize(volts, ohms) {
+            voltageSlider.value = volts;
+            resistanceSlider.value = ohms;
+            updateCircuit();
+        }
+
+        // Event Listeners for sliders
+        voltageSlider.addEventListener('input', updateCircuit);
+        resistanceSlider.addEventListener('input', updateCircuit);
+
+        // Reset button functionality
+        resetButton.addEventListener('click', () => {
+            setValuesAndInitialize(DEFAULT_VOLTAGE, DEFAULT_RESISTANCE);
+        });
+
+        // Initial calculation on page load
+        window.addEventListener('load', () => {
+             setValuesAndInitialize(DEFAULT_VOLTAGE, DEFAULT_RESISTANCE);
+        });
+
+    </script>
+</body>
+</html>
