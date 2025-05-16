@@ -238,18 +238,19 @@
             <section id="notecardsDisplaySection" aria-labelledby="notecardsDisplayHeading">
                 <h2 id="notecardsDisplayHeading" class="text-2xl font-semibold mb-6 text-slate-700">Your Notecards</h2>
                 <div id="notecardsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <p id="noCardsMessage" class="text-slate-500 col-span-full text-center py-4">No notecards yet. Add some above!</p>
-                </div>
+                    </div>
+                <p id="noCardsMessage" class="text-slate-500 col-span-full text-center py-4 hidden">No notecards yet. Add some above!</p>
             </section>
         </div>
 
-        <section id="studySessionInterface" class="hidden">
+        <section id="studySessionInterface" class="hidden mt-8 p-6 bg-white rounded-lg shadow-lg">
             <h2 class="text-2xl font-semibold mb-4 text-slate-700">Study Session</h2>
             <p id="studyProgress" class="text-sm text-slate-500 mb-4"></p>
             <div id="studyCardDisplay" class="mb-6">
                 <div id="studyCardTerm" class="font-semibold"></div>
                 <div id="studyCardDefinition" class="hidden mt-2">
-                    <p id="studyCardDefinitionContent"></p> </div>
+                    <p id="studyCardDefinitionContent"></p>
+                </div>
             </div>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
                 <button id="revealDefinitionBtn" class="btn btn-primary w-full sm:w-auto">Reveal Definition</button>
@@ -266,7 +267,7 @@
                 </ul>
             <div class="flex flex-wrap gap-3">
                 <button id="returnToMainBtn" class="btn btn-primary">Return to Main View</button>
-                <button id="studyAgainBtn" class="btn btn-warning">Study These Again</button>
+                <button id="studyAgainBtn" class="btn btn-warning hidden">Study These Again</button>
             </div>
         </section>
 
@@ -312,28 +313,28 @@
             const studySessionInterface = document.getElementById('studySessionInterface');
             const studyResultsInterface = document.getElementById('studyResultsInterface');
             const studyProgress = document.getElementById('studyProgress');
-            const studyCardDisplay = document.getElementById('studyCardDisplay');
-            const studyCardTerm = document.getElementById('studyCardTerm');
-            const studyCardDefinition = document.getElementById('studyCardDefinition'); // Container
-            const studyCardDefinitionContent = document.getElementById('studyCardDefinitionContent'); // Actual text
+            const studyCardDisplay = document.getElementById('studyCardDisplay'); // The main display box
+            const studyCardTerm = document.getElementById('studyCardTerm'); // For the term text
+            const studyCardDefinition = document.getElementById('studyCardDefinition'); // Container for definition text
+            const studyCardDefinitionContent = document.getElementById('studyCardDefinitionContent'); // Actual definition p tag
             const revealDefinitionBtn = document.getElementById('revealDefinitionBtn');
             const knewItBtn = document.getElementById('knewItBtn');
             const didNotKnowItBtn = document.getElementById('didNotKnowItBtn');
             const exitStudyBtn = document.getElementById('exitStudyBtn');
             const studyResultMessage = document.getElementById('studyResultMessage');
-            const studyResultsList = document.getElementById('studyResultsList');
+            const studyResultsList = document.getElementById('studyResultsList'); // ul for wrong cards
             const returnToMainBtn = document.getElementById('returnToMainBtn');
             const studyAgainBtn = document.getElementById('studyAgainBtn');
 
-            let notecards = []; // Array to store notecard objects
+            let notecards = []; // Array to store notecard objects { term, definition, id }
 
             // --- Study Session State ---
             let studySessionData = {
                 isActive: false,
-                allCardsInSession: [], // Holds the cards for the current session (can be all or just 'wrong' ones)
+                allCardsInSession: [], // Holds the cards for the current session
                 currentCardIndex: 0,
                 cardsMarkedWrong: [],
-                cardsMarkedRight: [] // Can be used for stats if needed later
+                cardsMarkedRight: []
             };
 
             // --- Utility Functions (Modal) ---
@@ -345,16 +346,18 @@
                     if (onConfirm) onConfirm();
                 };
 
-                modalConfirmBtn.className = 'btn';
-                modalCancelBtn.className = 'btn btn-secondary hidden';
+                modalConfirmBtn.className = 'btn'; // Reset classes
+                modalCancelBtn.className = 'btn btn-secondary hidden'; // Reset and hide cancel
 
                 if (type === 'error') modalConfirmBtn.classList.add('btn-danger');
                 else if (type === 'success') modalConfirmBtn.classList.add('btn-success');
+                else if (type === 'warning') modalConfirmBtn.classList.add('btn-warning');
                 else modalConfirmBtn.classList.add('btn-primary');
                 modalConfirmBtn.classList.remove('hidden');
 
                 if (showCancel) {
                     modalCancelBtn.classList.remove('hidden');
+                    modalCancelBtn.textContent = 'Cancel'; // Default cancel text
                     modalCancelBtn.onclick = closeModal;
                 } else {
                     modalCancelBtn.classList.add('hidden');
@@ -364,7 +367,7 @@
 
             function closeModal() {
                 messageModal.style.display = 'none';
-                modalConfirmBtn.onclick = null;
+                modalConfirmBtn.onclick = null; // Clear handlers to prevent multiple executions
                 modalCancelBtn.onclick = null;
             }
             closeModalBtn.onclick = closeModal;
@@ -377,14 +380,8 @@
                 notecardsContainer.innerHTML = '';
                 if (notecards.length === 0) {
                     noCardsMessage.classList.remove('hidden');
-                    if (!notecardsContainer.contains(noCardsMessage)) {
-                         notecardsContainer.appendChild(noCardsMessage);
-                    }
                 } else {
                     noCardsMessage.classList.add('hidden');
-                    if (notecardsContainer.contains(noCardsMessage)) {
-                        notecardsContainer.removeChild(noCardsMessage);
-                    }
                     notecards.forEach((card, index) => {
                         const cardElement = createNotecardElement(card, index);
                         notecardsContainer.appendChild(cardElement);
@@ -395,7 +392,7 @@
             function createNotecardElement(card, index) {
                 const cardDiv = document.createElement('div');
                 cardDiv.classList.add('notecard', 'h-64', 'flex', 'flex-col', 'justify-between');
-                cardDiv.dataset.index = index;
+                cardDiv.dataset.index = index; // Store original index for deletion
 
                 const cardInner = document.createElement('div');
                 cardInner.classList.add('notecard-inner');
@@ -418,23 +415,26 @@
                 cardInner.appendChild(cardBack);
                 cardDiv.appendChild(cardInner);
 
+                // Flip functionality
                 cardDiv.addEventListener('click', (e) => {
-                    if (e.target.closest('.delete-btn-container')) return;
+                    if (e.target.closest('.delete-btn-container')) return; // Don't flip if delete is clicked
                     cardDiv.classList.toggle('flipped');
                 });
 
+                // Delete button
                 const deleteBtnContainer = document.createElement('div');
                 deleteBtnContainer.classList.add('delete-btn-container', 'absolute', 'top-2', 'right-2', 'z-10');
                 const deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = '&times;';
+                deleteBtn.innerHTML = '&times;'; // X symbol
                 deleteBtn.classList.add('btn-icon', 'text-lg', 'leading-none', 'rounded-full', 'w-8', 'h-8', 'flex', 'items-center', 'justify-center');
                 deleteBtn.title = "Delete card";
                 deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
+                    e.stopPropagation(); // Prevent card flip on delete click
                     deleteNotecard(index);
                 };
                 deleteBtnContainer.appendChild(deleteBtn);
-                cardDiv.appendChild(deleteBtnContainer);
+                cardDiv.appendChild(deleteBtnContainer); // Append to cardDiv, not cardInner
+
                 return cardDiv;
             }
 
@@ -443,24 +443,25 @@
                     showMessage('Both term and definition are required.', 'error');
                     return;
                 }
-                notecards.push({ term, definition, id: Date.now() });
+                notecards.push({ term, definition, id: Date.now() }); // Add a unique ID
                 renderNotecards();
-                showMessage('Notecard added successfully!', 'success');
+                // No automatic save message here, saveCardsBtn provides explicit feedback
             }
 
             function deleteNotecard(index) {
-                 showMessage('Are you sure you want to delete this card?', 'warning', () => {
+                showMessage('Are you sure you want to delete this card?', 'warning', () => {
                     notecards.splice(index, 1);
                     renderNotecards();
-                    saveCardsToLocalStorage();
+                    saveCardsToLocalStorage(); // Save after deletion
                     showMessage('Notecard deleted.', 'info');
-                }, true);
+                }, true); // Show cancel button
             }
 
             // --- Local Storage Functions ---
             function saveCardsToLocalStorage() {
                 try {
                     localStorage.setItem('mindflipNotecards', JSON.stringify(notecards));
+                    // Provide feedback only if modal isn't already showing and not in study session
                     if ((!messageModal.style.display || messageModal.style.display === 'none') && !studySessionData.isActive) {
                         showMessage('Notecards saved to your browser!', 'success');
                     } else {
@@ -479,11 +480,11 @@
                         notecards = JSON.parse(storedCards);
                     } catch (e) {
                         console.error("Error parsing cards from localStorage:", e);
-                        notecards = [];
+                        notecards = []; // Reset to empty if parsing fails
                         showMessage('Could not load cards from previous session due to an error.', 'error');
                     }
                 }
-                renderNotecards();
+                renderNotecards(); // Always render, even if empty
             }
 
             // --- Import/Export Functions ---
@@ -492,7 +493,7 @@
                     showMessage('No notecards to export.', 'info');
                     return;
                 }
-                const jsonData = JSON.stringify(notecards, null, 2);
+                const jsonData = JSON.stringify(notecards, null, 2); // Pretty print JSON
                 const blob = new Blob([jsonData], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -508,40 +509,51 @@
             function importCardsHandler(event) {
                 const file = event.target.files[0];
                 if (!file) return;
+
                 if (file.type !== "application/json") {
                     showMessage("Invalid file type. Please select a '.json' file.", "error");
-                    importFile.value = ""; return;
+                    importFile.value = ""; // Reset file input
+                    return;
                 }
+
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     try {
                         const importedData = JSON.parse(e.target.result);
+                        // Basic validation of imported structure
                         if (Array.isArray(importedData) && importedData.every(item => item && typeof item.term === 'string' && typeof item.definition === 'string')) {
-                            showMessage('Import successful. Do you want to merge with existing cards or replace them?', 'info', () => {
-                                notecards = notecards.concat(importedData.filter(newCard =>
-                                    !notecards.some(existingCard => existingCard.term === newCard.term && existingCard.definition === newCard.definition)
-                                ));
-                                renderNotecards(); saveCardsToLocalStorage(); showMessage('Cards merged successfully!', 'success');
-                            }, true);
+                            showMessage('Import successful. Do you want to merge with existing cards or replace them?', 'info',
+                                () => { // OnConfirm (Merge)
+                                    // Filter out duplicates before merging
+                                    const newCardsToMerge = importedData.filter(newCard =>
+                                        !notecards.some(existingCard => existingCard.term === newCard.term && existingCard.definition === newCard.definition)
+                                    );
+                                    notecards = notecards.concat(newCardsToMerge);
+                                    renderNotecards(); saveCardsToLocalStorage(); closeModal(); showMessage('Cards merged successfully!', 'success');
+                                },
+                                true // Show Cancel button
+                            );
+                            // Customize modal buttons for Merge/Replace
                             modalConfirmBtn.textContent = 'Merge';
                             modalCancelBtn.textContent = 'Replace';
-                            modalCancelBtn.onclick = () => {
+                            modalCancelBtn.onclick = () => { // OnCancel (Replace)
                                 notecards = importedData;
                                 renderNotecards(); saveCardsToLocalStorage(); closeModal(); showMessage('Cards replaced successfully!', 'success');
                             };
+
                         } else {
-                            showMessage('Invalid JSON format. Make sure the file was exported from MindFlip.', 'error');
+                            showMessage('Invalid JSON format. Make sure the file was exported from MindFlip or has the correct structure (array of objects with "term" and "definition" strings).', 'error');
                         }
                     } catch (error) {
                         console.error('Error importing cards:', error);
                         showMessage('Error reading or parsing the file. It might be corrupted.', 'error');
                     } finally {
-                        importFile.value = "";
+                        importFile.value = ""; // Reset file input in all cases
                     }
                 };
                 reader.onerror = () => {
                     showMessage('Failed to read the file.', 'error');
-                    importFile.value = "";
+                    importFile.value = ""; // Reset file input
                 };
                 reader.readAsText(file);
             }
@@ -554,15 +566,192 @@
                 showMessage('Are you sure you want to delete ALL cards? This cannot be undone.', 'danger', () => {
                     notecards = [];
                     renderNotecards();
-                    saveCardsToLocalStorage();
+                    saveCardsToLocalStorage(); // Persist the clearance
                     showMessage('All notecards have been cleared.', 'success');
-                }, true);
+                }, true); // Show cancel button
             }
 
-            // --- Study Session Functions ---
             function shuffleArray(array) { // Fisher-Yates shuffle
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]];
                 }
-                return arr
+                return array; // CORRECTED TYPO from 'arr' to 'array'
+            }
+
+            // --- Study Session Functions ---
+            function startStudySession(cardsToStudy) {
+                if (!cardsToStudy || cardsToStudy.length === 0) {
+                    showMessage('No cards available for this study session.', 'info');
+                    return;
+                }
+
+                studySessionData.isActive = true;
+                studySessionData.allCardsInSession = shuffleArray([...cardsToStudy]); // Use a shuffled copy
+                studySessionData.currentCardIndex = 0;
+                studySessionData.cardsMarkedWrong = []; // Reset for the new session
+                studySessionData.cardsMarkedRight = [];   // Reset for the new session
+
+                mainContentArea.classList.add('hidden');
+                studyResultsInterface.classList.add('hidden'); // Ensure results are hidden
+                studySessionInterface.classList.remove('hidden');
+
+                loadNextStudyCard();
+                updateStudySessionButtons(false); // Definition not revealed initially
+            }
+
+            function loadNextStudyCard() {
+                if (studySessionData.currentCardIndex < studySessionData.allCardsInSession.length) {
+                    const card = studySessionData.allCardsInSession[studySessionData.currentCardIndex];
+                    studyCardTerm.textContent = card.term;
+                    studyCardDefinitionContent.textContent = card.definition;
+                    studyCardDefinition.classList.add('hidden'); // Hide definition for the new card
+                    studyProgress.textContent = `Card ${studySessionData.currentCardIndex + 1} of ${studySessionData.allCardsInSession.length}`;
+                } else {
+                    endStudySession(); // All cards in the current session have been reviewed
+                }
+            }
+
+            function updateStudySessionButtons(definitionRevealed) {
+                if (definitionRevealed) {
+                    revealDefinitionBtn.classList.add('hidden');
+                    knewItBtn.classList.remove('hidden');
+                    didNotKnowItBtn.classList.remove('hidden');
+                } else {
+                    revealDefinitionBtn.classList.remove('hidden');
+                    knewItBtn.classList.add('hidden');
+                    didNotKnowItBtn.classList.add('hidden');
+                }
+            }
+
+            function endStudySession() {
+                studySessionData.isActive = false;
+                studySessionInterface.classList.add('hidden');
+                studyResultsInterface.classList.remove('hidden');
+
+                let correctCount = studySessionData.cardsMarkedRight.length;
+                let totalInSession = studySessionData.allCardsInSession.length;
+                let wrongCount = studySessionData.cardsMarkedWrong.length;
+
+                if (totalInSession > 0) {
+                    studyResultMessage.textContent = `Session finished! You knew ${correctCount} out of ${totalInSession} cards.`;
+                    if (wrongCount > 0) {
+                        studyResultMessage.textContent += ` You marked ${wrongCount} card(s) as 'didn't know'.`;
+                    } else {
+                        studyResultMessage.textContent += ` Great job, you knew all of them!`;
+                    }
+                } else {
+                    studyResultMessage.textContent = "The study session had no cards.";
+                }
+
+
+                studyResultsList.innerHTML = ''; // Clear previous results from the list
+                if (studySessionData.cardsMarkedWrong.length > 0) {
+                    const listTitle = document.createElement('p');
+                    listTitle.textContent = "Cards you might want to review:";
+                    listTitle.classList.add('font-semibold', 'mb-2', 'text-slate-600');
+                    studyResultsList.appendChild(listTitle);
+
+                    studySessionData.cardsMarkedWrong.forEach(card => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `<strong>Term:</strong> ${card.term} <br> <strong>Definition:</strong> ${card.definition}`;
+                        studyResultsList.appendChild(listItem);
+                    });
+                    studyAgainBtn.classList.remove('hidden'); // Show "Study These Again" button
+                } else {
+                    studyAgainBtn.classList.add('hidden'); // Hide if no cards were marked wrong
+                    if (totalInSession > 0) { // And there were cards in the session
+                        const allCorrectMessage = document.createElement('p');
+                        allCorrectMessage.textContent = "Excellent! You knew all the cards in this session.";
+                        allCorrectMessage.classList.add('text-green-600', 'font-semibold');
+                        studyResultsList.appendChild(allCorrectMessage);
+                    }
+                }
+            }
+
+            // --- Event Listeners (Forms, Buttons) ---
+            addNotecardForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const term = e.target.notecardTerm.value;
+                const definition = e.target.notecardDefinition.value;
+                addNotecard(term, definition);
+                e.target.reset(); // Clear form fields
+                saveCardsToLocalStorage(); // Save after adding
+            });
+
+            saveCardsBtn.addEventListener('click', saveCardsToLocalStorage);
+            exportCardsBtn.addEventListener('click', exportCards);
+            importFile.addEventListener('change', importCardsHandler);
+            clearAllBtn.addEventListener('click', clearAllCards);
+
+            // Study Session Button Event Listeners
+            studyNotesBtn.addEventListener('click', () => {
+                if (notecards.length === 0) {
+                    showMessage('Please add some notecards before starting a study session.', 'info');
+                    return;
+                }
+                startStudySession(notecards); // Start session with all available notecards
+            });
+
+            revealDefinitionBtn.addEventListener('click', () => {
+                studyCardDefinition.classList.remove('hidden');
+                updateStudySessionButtons(true); // Definition is now revealed
+            });
+
+            knewItBtn.addEventListener('click', () => {
+                if (studySessionData.isActive && studySessionData.currentCardIndex < studySessionData.allCardsInSession.length) {
+                    studySessionData.cardsMarkedRight.push(studySessionData.allCardsInSession[studySessionData.currentCardIndex]);
+                    studySessionData.currentCardIndex++;
+                    loadNextStudyCard();
+                    updateStudySessionButtons(false); // Reset buttons for the next card
+                }
+            });
+
+            didNotKnowItBtn.addEventListener('click', () => {
+                 if (studySessionData.isActive && studySessionData.currentCardIndex < studySessionData.allCardsInSession.length) {
+                    studySessionData.cardsMarkedWrong.push(studySessionData.allCardsInSession[studySessionData.currentCardIndex]);
+                    studySessionData.currentCardIndex++;
+                    loadNextStudyCard();
+                    updateStudySessionButtons(false); // Reset buttons for the next card
+                }
+            });
+
+            exitStudyBtn.addEventListener('click', () => {
+                if (!studySessionData.isActive) return; // Prevent action if not in session
+                showMessage('Are you sure you want to exit the study session? Your current progress in this session will be lost.', 'warning', () => {
+                    studySessionData.isActive = false;
+                    studySessionInterface.classList.add('hidden');
+                    mainContentArea.classList.remove('hidden');
+                    studyResultsInterface.classList.add('hidden'); // Ensure results are also hidden
+                }, true); // Show cancel button
+            });
+
+            returnToMainBtn.addEventListener('click', () => {
+                studyResultsInterface.classList.add('hidden');
+                mainContentArea.classList.remove('hidden');
+            });
+
+            studyAgainBtn.addEventListener('click', () => {
+                if (studySessionData.cardsMarkedWrong.length > 0) {
+                    startStudySession(studySessionData.cardsMarkedWrong); // Study only the cards marked wrong
+                } else {
+                    // This case should ideally not happen if button is hidden, but as a fallback:
+                    showMessage('No cards were marked as "Didn\'t Know". Would you like to study all cards again?', 'info', () => {
+                        startStudySession(notecards);
+                    }, true);
+                    modalConfirmBtn.textContent = 'Study All';
+                }
+            });
+
+            // --- Initialization ---
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+            loadCardsFromLocalStorage(); // This will also call renderNotecards
+            // Initial state for study buttons (they are hidden by default CSS, but JS manages during session)
+            updateStudySessionButtons(false);
+
+        }); // CLOSING BRACKET FOR DOMContentLoaded listener
+    </script>
+</body>
+</html>
