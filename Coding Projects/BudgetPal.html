@@ -19,6 +19,8 @@
             --accent-blue-hover: #2563eb; /* Tailwind blue-600 */
             --accent-green: #10b981; /* Tailwind emerald-500 */
             --accent-red: #ef4444; /* Tailwind red-500 */
+            --accent-yellow: #f59e0b; /* Tailwind amber-500 for repeat button */
+            --accent-yellow-hover: #d97706; /* Tailwind amber-600 */
             --shadow-color: rgba(0, 0, 0, 0.2); /* For subtle shadows in dark mode */
         }
 
@@ -73,16 +75,17 @@
             font-weight: 500;
             transition: all 0.2s ease-in-out;
             cursor: pointer;
-            /* box-shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px 0 var(--shadow-color); */
             border: 1px solid transparent; /* For consistent sizing */
+            display: inline-flex; /* For aligning icon and text */
+            align-items: center; /* For aligning icon and text */
+            justify-content: center; /* For aligning icon and text */
         }
         .btn:hover {
             transform: translateY(-1px);
-            /* box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color); */
         }
         .btn-primary {
             background-color: var(--accent-blue);
-            color: white; /* Keep white text on bright blue */
+            color: white;
         }
         .btn-primary:hover {
             background-color: var(--accent-blue-hover);
@@ -93,15 +96,31 @@
             border: 1px solid var(--border-color);
         }
         .btn-secondary:hover {
-            background-color: var(--border-color); /* Slightly darker gray */
+            background-color: var(--border-color);
         }
         .btn-danger {
             background-color: var(--accent-red);
-            color: white; /* Keep white text on bright red */
+            color: white;
         }
         .btn-danger:hover {
             background-color: #dc2626; /* Tailwind red-600 */
         }
+        .btn-warning { /* For Repeat button */
+            background-color: var(--accent-yellow);
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: var(--accent-yellow-hover);
+        }
+        .btn-icon { /* For small icon buttons in table */
+            padding: 0.375rem; /* p-1.5 equivalent */
+            font-size: 0.75rem; /* text-xs */
+        }
+        .btn-icon svg {
+             width: 1.25rem; /* w-5 */
+             height: 1.25rem; /* h-5 */
+        }
+
         .summary-card {
             background-color: var(--bg-secondary);
             padding: 1.5rem;
@@ -120,12 +139,11 @@
         }
         .income { color: var(--accent-green); }
         .expense { color: var(--accent-red); }
-        .balance { color: var(--accent-blue); } /* Default, overridden by JS income/expense colors */
+        .balance { color: var(--accent-blue); }
 
-        /* Dark theme row styling */
-        .row-income { background-color: rgba(16, 185, 129, 0.1); /* Subtle green tint */ }
+        .row-income { background-color: rgba(16, 185, 129, 0.1); }
         .row-income:hover { background-color: rgba(16, 185, 129, 0.15) !important; }
-        .row-expense { background-color: rgba(239, 68, 68, 0.1); /* Subtle red tint */ }
+        .row-expense { background-color: rgba(239, 68, 68, 0.1); }
         .row-expense:hover { background-color: rgba(239, 68, 68, 0.15) !important; }
 
         .footer {
@@ -135,7 +153,6 @@
             color: var(--text-secondary);
             font-size: 0.875rem;
         }
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .container { margin: 1rem auto; padding: 1.5rem; }
             .form-grid { grid-template-columns: 1fr; }
@@ -147,26 +164,35 @@
                 border: 1px solid var(--border-color);
                 border-radius: 0.5rem;
                 overflow: hidden;
-                background-color: var(--bg-secondary); /* Ensure stacked rows have card bg */
+                background-color: var(--bg-secondary);
             }
             .table td {
                 text-align: right; padding-left: 50%; position: relative; border-bottom: 0;
-                 /* background-color: var(--bg-secondary); Ensure td backgrounds */
             }
-            .table td:not(:last-child) { border-bottom: 1px solid var(--border-color); } /* Separator for stacked cells */
+            .table td:not(:last-child) { border-bottom: 1px solid var(--border-color); }
             .table td:before {
                 content: attr(data-label); position: absolute; left: 1rem;
                 width: calc(50% - 1.5rem); padding-right: 0.75rem; font-weight: 600;
                 text-align: left; white-space: nowrap; color: var(--text-secondary);
             }
-            .action-buttons-cell { text-align: center !important; padding-left: 0 !important; }
-            .action-buttons-cell::before { display: none; }
+            .action-buttons-cell {
+                text-align: right !important; /* Ensure buttons align to right on mobile */
+                padding-left: 1rem !important; /* Adjust padding for mobile action cell */
+                padding-right: 1rem !important;
+            }
+            .action-buttons-cell::before { display: none; } /* Hide data-label for action cell */
+            .action-buttons-cell .btn-icon { margin-left: 0.5rem; } /* Space between buttons on mobile */
+
             .footer { margin-top: 1.5rem; }
         }
 
-        /* Style for date picker icon in dark mode (browser dependent) */
         input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.8); /* Adjust value to get desired brightness for dark mode */
+            filter: invert(0.8);
+        }
+        .action-buttons-container {
+            display: flex;
+            gap: 0.5rem; /* Space between action buttons */
+            justify-content: flex-end; /* Align buttons to the right in the cell */
         }
 
     </style>
@@ -274,7 +300,8 @@
             </div>
         </section>
 
-        <div id="messageBox" class="fixed bottom-5 right-5 text-white py-3 px-6 rounded-lg shadow-xl hidden transition-all duration-300 opacity-0 transform translate-y-5" style="background-color: var(--accent-blue);"> <p id="messageText"></p>
+        <div id="messageBox" class="fixed bottom-5 right-5 text-white py-3 px-6 rounded-lg shadow-xl hidden transition-all duration-300 opacity-0 transform translate-y-5" style="background-color: var(--accent-blue);">
+            <p id="messageText"></p>
         </div>
     </div>
 
@@ -284,6 +311,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
             const transactionForm = document.getElementById('transactionForm');
             const transactionTableBody = document.getElementById('transactionTableBody');
             const totalIncomeEl = document.getElementById('totalIncome');
@@ -297,20 +325,30 @@
             const clearAllDataButton = document.getElementById('clearAllData');
             document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-            const R = document.querySelector(':root'); // For accessing CSS variables if needed
+            const R = document.querySelector(':root'); // For accessing CSS variables
 
-            let transactions = [];
+            let transactions = []; // Array to store transaction objects
 
+            // --- Utility Functions ---
+
+            /**
+             * Displays a message to the user.
+             * @param {string} message - The message to display.
+             * @param {string} type - The type of message ('info', 'success', 'error').
+             */
             function showMessage(message, type = 'info') {
                 messageText.textContent = message;
                 messageBox.classList.remove('hidden', 'opacity-0', 'translate-y-5');
-                messageBox.classList.add('opacity-100', 'transform-none'); 
-                
-                // Reset background color then apply specific
-                messageBox.style.backgroundColor = R.style.getPropertyValue('--accent-blue'); // Default
-                if (type === 'error') messageBox.style.backgroundColor = R.style.getPropertyValue('--accent-red');
-                else if (type === 'success') messageBox.style.backgroundColor = R.style.getPropertyValue('--accent-green');
-                
+                messageBox.classList.add('opacity-100', 'transform-none');
+
+                // Reset background color then apply specific type color
+                messageBox.style.backgroundColor = ''; // Clear inline style
+                messageBox.classList.remove('bg-[var(--accent-blue)]', 'bg-[var(--accent-red)]', 'bg-[var(--accent-green)]');
+
+                if (type === 'error') messageBox.style.backgroundColor = getComputedStyle(R).getPropertyValue('--accent-red').trim();
+                else if (type === 'success') messageBox.style.backgroundColor = getComputedStyle(R).getPropertyValue('--accent-green').trim();
+                else messageBox.style.backgroundColor = getComputedStyle(R).getPropertyValue('--accent-blue').trim(); // Default info
+
                 setTimeout(() => {
                     messageBox.classList.remove('opacity-100', 'transform-none');
                     messageBox.classList.add('opacity-0', 'translate-y-5');
@@ -318,78 +356,111 @@
                 }, 3000);
             }
 
+            /**
+             * Saves the current transactions array to local storage.
+             */
             function saveDataToBrowser() {
                 localStorage.setItem('budgetTransactionsDarkModern', JSON.stringify(transactions));
             }
 
+            /**
+             * Loads transactions from local storage.
+             */
             function loadDataFromBrowser() {
                 const storedData = localStorage.getItem('budgetTransactionsDarkModern');
                 transactions = storedData ? JSON.parse(storedData) : [];
             }
 
+            // --- Core Application Logic ---
+
+            /**
+             * Renders all transactions in the table.
+             */
             function renderTransactions() {
-                transactionTableBody.innerHTML = '';
+                transactionTableBody.innerHTML = ''; // Clear existing rows
                 const tableHead = document.querySelector('.table thead');
 
                 if (transactions.length === 0) {
                     noTransactionsMessage.classList.remove('hidden');
-                    if(tableHead) tableHead.classList.add('hidden');
+                    if(tableHead) tableHead.classList.add('hidden'); // Hide table header if no transactions
                 } else {
                     noTransactionsMessage.classList.add('hidden');
-                    if(tableHead) tableHead.classList.remove('hidden');
-                    
+                    if(tableHead) tableHead.classList.remove('hidden'); // Show table header
+
+                    // Sort transactions by date, most recent first
                     const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
 
                     sortedTransactions.forEach(transaction => {
                         const row = transactionTableBody.insertRow();
+                        // Apply row-specific styling based on transaction type
                         row.className = `border-b border-[var(--border-color)] ${transaction.type === 'income' ? 'row-income' : 'row-expense'}`;
 
+                        // Date Cell
                         const cellDate = row.insertCell();
                         cellDate.setAttribute('data-label', 'Date');
+                        // Ensure date is treated as local, not UTC, for display
                         cellDate.textContent = new Date(transaction.date + 'T00:00:00').toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
                         cellDate.className = 'text-sm text-[var(--text-secondary)]';
 
-
+                        // Description Cell
                         const cellDescription = row.insertCell();
                         cellDescription.setAttribute('data-label', 'Description');
                         cellDescription.textContent = transaction.description;
                         cellDescription.className = 'text-sm text-[var(--text-primary)] font-medium';
 
-
+                        // Category Cell
                         const cellCategory = row.insertCell();
                         cellCategory.setAttribute('data-label', 'Category');
                         cellCategory.textContent = transaction.category;
                         cellCategory.className = 'text-sm text-[var(--text-secondary)]';
 
-                        
+                        // Type Cell
                         const cellType = row.insertCell();
                         cellType.setAttribute('data-label', 'Type');
                         cellType.textContent = transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1);
                         cellType.className = `text-sm font-semibold ${transaction.type === 'income' ? 'income' : 'expense'}`;
 
-
+                        // Amount Cell
                         const cellAmount = row.insertCell();
                         cellAmount.setAttribute('data-label', 'Amount');
                         cellAmount.textContent = `$${transaction.amount.toFixed(2)}`;
                         cellAmount.className = `text-sm font-semibold ${transaction.type === 'income' ? 'income' : 'expense'}`;
 
-                        
+                        // Actions Cell
                         const cellActions = row.insertCell();
                         cellActions.setAttribute('data-label', 'Actions');
-                        cellActions.classList.add('action-buttons-cell');
+                        cellActions.classList.add('action-buttons-cell'); // For mobile styling
 
+                        const buttonsContainer = document.createElement('div');
+                        buttonsContainer.className = 'action-buttons-container';
+
+
+                        // Repeat Button
+                        const repeatButton = document.createElement('button');
+                        repeatButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M15.312 11.424C15.11 10.592 14.354 10 13.455 10H6.545C5.646 10 4.89 10.592 4.688 11.424A5.504 5.504 0 002.75 15.5V16a1 1 0 001 1h12.5a1 1 0 001-1v-.5a5.504 5.504 0 00-1.938-4.076zM10 14.5a1 1 0 00-1-1H6.75a.75.75 0 010-1.5h2.5a2.5 2.5 0 010 5H6.75a.75.75 0 010-1.5H9a1 1 0 001-1zM10 2a4 4 0 100 8 4 4 0 000-8zm0 6a2 2 0 110-4 2 2 0 010 4zM6.25 6.5A.75.75 0 007.5 6h5a.75.75 0 000-1.5h-5A.75.75 0 006.25 6.5z" clip-rule="evenodd" /></svg>`; // Placeholder, replace with actual SVG
+                        repeatButton.className = 'btn btn-warning btn-icon'; // Use btn-icon for smaller padding
+                        repeatButton.title = "Repeat Transaction";
+                        repeatButton.onclick = () => repeatTransaction(transaction.id);
+                        buttonsContainer.appendChild(repeatButton);
+
+                        // Delete Button
                         const deleteButton = document.createElement('button');
                         deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.58.177-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" /></svg>`;
-                        deleteButton.className = 'btn btn-danger p-1.5 text-xs';
+                        deleteButton.className = 'btn btn-danger btn-icon'; // Use btn-icon for smaller padding
                         deleteButton.title = "Delete Transaction";
                         deleteButton.onclick = () => deleteTransaction(transaction.id);
-                        cellActions.appendChild(deleteButton);
+                        buttonsContainer.appendChild(deleteButton);
+
+                        cellActions.appendChild(buttonsContainer);
                     });
                 }
                 updateSummary();
-                saveDataToBrowser();
+                saveDataToBrowser(); // Save data after any change
             }
 
+            /**
+             * Updates the summary section (total income, expenses, balance).
+             */
             function updateSummary() {
                 const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
                 const totalExpenses = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
@@ -399,11 +470,19 @@
                 totalExpensesEl.textContent = `$${totalExpenses.toFixed(2)}`;
                 netBalanceEl.textContent = `$${balance.toFixed(2)}`;
 
-                netBalanceEl.classList.remove('income', 'expense', 'balance');
-                if (balance >= 0) netBalanceEl.classList.add('income');
-                else netBalanceEl.classList.add('expense');
+                // Update balance color based on positive or negative
+                netBalanceEl.classList.remove('income', 'expense', 'balance'); // Remove all first
+                if (balance >= 0) {
+                    netBalanceEl.classList.add('income');
+                } else {
+                    netBalanceEl.classList.add('expense');
+                }
             }
 
+            /**
+             * Handles the submission of the transaction form.
+             * @param {Event} event - The form submission event.
+             */
             transactionForm.addEventListener('submit', (event) => {
                 event.preventDefault();
                 const date = document.getElementById('transactionDate').value;
@@ -421,10 +500,17 @@
                 renderTransactions();
                 showMessage('Transaction added successfully!', 'success');
                 transactionForm.reset();
-                document.getElementById('transactionDate').valueAsDate = new Date();
+                // Set date to today after reset
+                if (document.getElementById('transactionDate')) {
+                     document.getElementById('transactionDate').valueAsDate = new Date();
+                }
             });
 
-            window.deleteTransaction = (id) => {
+            /**
+             * Deletes a transaction by its ID.
+             * @param {number} id - The ID of the transaction to delete.
+             */
+            window.deleteTransaction = (id) => { // Make it globally accessible
                 const transactionToDelete = transactions.find(t => t.id === id);
                 const description = transactionToDelete ? transactionToDelete.description : "this transaction";
                 if (confirm(`Are you sure you want to delete "${description}"?`)) {
@@ -433,18 +519,42 @@
                     showMessage(`Transaction "${description}" deleted.`, 'info');
                 }
             };
-            
+
+            /**
+             * Repeats a transaction by its ID.
+             * @param {number} id - The ID of the transaction to repeat.
+             */
+            window.repeatTransaction = (id) => { // Make it globally accessible
+                const originalTransaction = transactions.find(transaction => transaction.id === id);
+                if (originalTransaction) {
+                    const newTransaction = {
+                        ...originalTransaction, // Copy all properties
+                        id: Date.now(), // Assign a new unique ID
+                        // Optionally, you might want to update the date to the current date
+                        // date: new Date().toISOString().slice(0,10)
+                    };
+                    transactions.push(newTransaction);
+                    renderTransactions();
+                    showMessage(`Transaction "${originalTransaction.description}" repeated.`, 'success');
+                } else {
+                    showMessage('Could not find the transaction to repeat.', 'error');
+                }
+            };
+
+
+            // --- Data Import/Export and Clearing ---
+
             exportButton.addEventListener('click', () => {
                 if (transactions.length === 0) {
                     showMessage('No data to export.', 'info');
                     return;
                 }
-                const jsonData = JSON.stringify(transactions, null, 2);
+                const jsonData = JSON.stringify(transactions, null, 2); // Pretty print JSON
                 const blob = new Blob([jsonData], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                const timestamp = new Date().toISOString().slice(0,10);
+                const timestamp = new Date().toISOString().slice(0,10).replace(/-/g, '');
                 a.download = `budget_transactions_${timestamp}.json`;
                 document.body.appendChild(a);
                 a.click();
@@ -460,22 +570,24 @@
                     reader.onload = (e) => {
                         try {
                             const importedData = JSON.parse(e.target.result);
+                            // Validate imported data structure
                             if (Array.isArray(importedData)) {
-                                const isValid = importedData.every(item => 
+                                // Check if every item has the required fields and types
+                                const isValid = importedData.every(item =>
                                     typeof item === 'object' && item !== null &&
                                     'id' in item && typeof item.id === 'number' &&
-                                    'date' in item && typeof item.date === 'string' && 
+                                    'date' in item && typeof item.date === 'string' && // Basic check, could be more robust
                                     'description' in item && typeof item.description === 'string' &&
                                     'category' in item && typeof item.category === 'string' &&
                                     'type' in item && (item.type === 'income' || item.type === 'expense') &&
                                     'amount' in item && typeof item.amount === 'number'
                                 );
 
-                                if (isValid || importedData.length === 0) {
+                                if (isValid || importedData.length === 0) { // Allow empty array import
                                     if (confirm(`This will replace all current transactions. Are you sure you want to import ${importedData.length} transactions?`)) {
                                         transactions = importedData.map(item => ({
                                             ...item,
-                                            amount: parseFloat(item.amount)
+                                            amount: parseFloat(item.amount) // Ensure amount is a number
                                         }));
                                         renderTransactions();
                                         showMessage('Transactions imported successfully!', 'success');
@@ -489,7 +601,7 @@
                         } catch (error) {
                             showMessage(`Error importing file: ${error.message}`, 'error');
                         } finally {
-                            importFile.value = ''; 
+                            importFile.value = ''; // Reset file input to allow re-importing same file
                         }
                     };
                     reader.readAsText(file);
@@ -503,17 +615,19 @@
                 }
                 if (confirm('Are you sure you want to delete ALL transactions? This action cannot be undone.')) {
                     transactions = [];
-                    renderTransactions(); 
+                    renderTransactions(); // This will also update summary and save
                     showMessage('All transactions have been cleared.', 'success');
                 }
             });
-            
+
+            // --- Initial Setup ---
+            // Set default date for new transactions to today
             if (document.getElementById('transactionDate')) {
                 document.getElementById('transactionDate').valueAsDate = new Date();
             }
 
-            loadDataFromBrowser();
-            renderTransactions();
+            loadDataFromBrowser(); // Load any saved data
+            renderTransactions();  // Display transactions and update summary
         });
     </script>
 </body>
