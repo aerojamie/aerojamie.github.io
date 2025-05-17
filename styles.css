@@ -422,6 +422,7 @@ header { /* Used within .intro - MODIFIED FOR DROPDOWN PLACEMENT */
 .project-links {
     margin-top: auto;
     display: flex;
+    flex-direction: column;
     gap: 0.75rem;
     flex-wrap: wrap;
 }
