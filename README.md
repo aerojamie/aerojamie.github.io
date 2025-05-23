@@ -1,6 +1,6 @@
-This repository contains my Personal Portfolio Website, where I showcase my skills, experience, and various creative and coding projects. I designed this website to be responsive and to feature a clean, modern aesthetic.
+___This repository contains my Personal Portfolio Website, where I showcase my skills, experience, and various creative and coding projects. I designed this website to be responsive and to feature a clean, modern aesthetic.___
 
-**Repository Structure**
+**Repository Structure:**
 I've organized the repository to clearly separate the main portfolio pages from my individual coding projects:
 
 **My Main Portfolio Pages:**
