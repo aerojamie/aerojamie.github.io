@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 8-Ball of Destiny (Maybe)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1f2937; /* Tailwind gray-800 */
+        }
+
+        /* Magic 8-Ball specific styles */
+        #eight-ball-container {
+            perspective: 1000px;
+        }
+
+        #eight-ball {
+            width: 300px;
+            height: 300px;
+            background-color: #111827; /* Tailwind gray-900 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #eight-ball::before { /* Glossy reflection */
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 20%;
+            width: 60%;
+            height: 30%;
+            background: radial-gradient(circle at 50% 0, rgba(255,255,255,0.5), rgba(255,255,255,0) 70%);
+            border-radius: 50% / 25%;
+            transform: rotate(10deg);
+            opacity: 0.7;
+        }
+
+        #eight-ball:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        }
+
+        #eight-ball:active {
+            transform: scale(0.98);
+        }
+
+        #window {
+            width: 160px;
+            height: 160px;
+            background-color: #1f2937; /* Tailwind gray-800 */
+            border: 4px solid #374151; /* Tailwind gray-700 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        #answer-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        #answer-triangle {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 105px solid #001f3f; /* Dark navy blue */
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out 0.3s;
+        }
+
+        #answer {
+            color: #e0e7ff; /* Tailwind indigo-100 */
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            max-width: 80%; /* Ensures text doesn't get too wide */
+            display: none;
+            animation: fadeInText 0.5s ease-in-out 0.5s forwards;
+            position: relative; /* Kept for z-index stacking with triangle */
+            z-index: 2;
+            line-height: 1.3;
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .shake-animation {
+            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0) rotate(-1deg); }
+            20%, 80% { transform: translate3d(2px, 0, 0) rotate(2deg); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0) rotate(-3deg); }
+            40%, 60% { transform: translate3d(3px, 0, 0) rotate(3deg); }
+        }
+
+        #message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444; /* Tailwind red-500 */
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-200 to-sky-200 dark:from-slate-800 dark:to-sky-900 flex flex-col items-center justify-center min-h-screen p-4 selection:bg-sky-500 selection:text-white">
+
+    <div id="message-box"></div>
+
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 md:p-10 rounded-xl shadow-2xl w-full max-w-md text-center">
+        <h1 class="text-3xl sm:text-4xl font-bold text-sky-700 dark:text-sky-400 mb-3">The Mystical (and Mildly Sarcastic) 8-Ball</h1>
+        <p class="text-slate-600 dark:text-slate-400 mb-6 text-sm sm:text-base">
+            Type your yes/no question below, then click the 8-Ball for an answer that's probably not helpful (but hopefully funny).
+        </p>
+
+        <input type="text" id="question-input" placeholder="e.g., Will I ever find my keys?" class="w-full p-3 mb-6 border-2 border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none dark:bg-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 transition-colors">
+
+        <div id="eight-ball-container" class="mx-auto mb-6 flex justify-center items-center">
+            <div id="eight-ball">
+                <div id="window">
+                    <div id="answer-container">
+                        <div id="answer-triangle" style="opacity: 1;"></div>
+                        <p id="answer" style="display: block; animation: 0.5s ease-in-out 0.5s 1 normal forwards running fadeInText;">Consulting the orb...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="ask-button" class="w-full bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-150 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50 text-lg">
+            Consult the Orb
+        </button>
+         <p class="text-xs text-slate-500 dark:text-slate-500 mt-6">
+            Disclaimer: This 8-ball is for entertainment purposes only. Do not make major life decisions based on its questionable wisdom.
+        </p>
+    </div>
+
+    <footer class="mt-8 text-center">
+            <p class="text-sm text-sky-300">&copy; <span id="currentYear"></span> Jamie Sessions.</p>
+    </footer>
+    <script>
+        // Get DOM elements
+        const eightBall = document.getElementById('eight-ball');
+        const answerDisplay = document.getElementById('answer');
+        const answerTriangle = document.getElementById('answer-triangle');
+        const questionInput = document.getElementById('question-input');
+        const askButton = document.getElementById('ask-button');
+        const messageBox = document.getElementById('message-box');
+
+        // Array of funny/sarcastic answers
+        // MODIFIED: Added more funny answers
+        const funnyAnswers = [
+            "Signs point to 'Maybe if you try harder... or not.'",
+            "Ask again when I've had my coffee.",
+            "My sources say 'LOL, no.'",
+            "Outlook not so good... for your enemies, maybe?",
+            "Yes, definitely! (Just kidding, I have no idea.)",
+            "Reply hazy, try asking your cat.",
+            "Cannot predict now, I'm busy binge-watching.",
+            "Don't count on it, unless it involves pizza.",
+            "It is decidedly so... that you should get a snack.",
+            "As I see it, yes, if 'yes' means 'possibly not'.",
+            "Concentrate and ask again... or just flip a coin.",
+            "Very doubtful. Like, 'snowball in a volcano' doubtful.",
+            "Outlook good, if your standards are low enough.",
+            "It is certain... that I need a vacation.",
+            "You may rely on it... to be vague.",
+            "The stars say 'meh'.",
+            "Probably. But what do I know? I'm a digital ball.",
+            "Error 404: Answer not found. Try rebooting your life.",
+            "Sure, why not? Live a little!",
+            "Let me consult my supervisor... oh wait, that's you.",
+            "Absolutely! Unless it’s illegal, then no comment.",
+            "Better not tell you now... I like suspense.",
+            "The vibes are off. Try again later.",
+            "Yes. No. Maybe. Welcome to indecision!",
+            "Don’t count on it... or do. I’m not your life coach.",
+            "Signs point to ‘Eh, could go either way.’",
+            "My reply is no, but I’m open to negotiation.",
+            "Ask again later, I’m in airplane mode.",
+            "Chances are good. Like, winning-the-lottery good. (So, not great.)",
+            "Outlook unclear. Please shake harder.",
+            "Yes, unless Mercury is in retrograde again.",
+            "It is certain... that I’m stalling.",
+            "Without a doubt! (But with a lot of doubt.)",
+            "You may rely on it, unless it’s directions.",
+            "Very likely... in an alternate universe.",
+            "Reply hazy, my brain's on vacation.",
+            "Not today, friend. Try bribing me with cookies.",
+            "I asked the cosmos, they left me on read.",
+            "Sure! And if not, just pretend I said no.",
+            "I'm just a plastic ball with attitude. What did you expect?",
+            "All signs point to yes... unless you're asking about love. Then good luck.",
+            "My magic is buffering. Please hold.",
+            "Absolutely! Just kidding. Please don’t base life decisions on this.",
+            "Hard to say... my third eye needs glasses.",
+            "Sure, if you believe in miracles and have snacks.",
+            "The answer is yes... if you squint hard enough.",
+            "I rolled a d20 and got a 1. So... no.",
+            "Future unclear. Try bribing the universe.",
+            "Don’t quote me on this, but... probably not.",
+            "Yes, but only in a sitcom kind of way.",
+            "I foresee... confusion. Mostly yours.",
+            "My inner oracle is on a coffee break.",
+            "Chances are slim, but hey, slim’s still a chance!",
+            "It is known... by absolutely no one.",
+            "I've seen better questions. Just saying.",
+            "The odds are good. The outcome? Questionable.",
+            "Possibly. But only if you do a dramatic montage first.",
+            "The universe says yes. Your ex says no.",
+            "Ask again later. I’m emotionally unavailable right now.",
+            "Yes, but expect plot twists.",
+            "Yes, but only under a full moon with perfect vibes.",
+            "Nope. But hey, A for effort!",
+            "Unclear. I was distracted by a squirrel.",
+            "The spirits say yes... but they’re super sarcastic.",
+            "It’s a yes from me, but don’t tell the others.",
+            "Not likely. Unless you're a wizard.",
+            "Ask again after a nap and a snack.",
+            "Signs point to... ugh, fine, I guess.",
+            "You already know the answer. You just wanted validation.",
+            "Yup. And pigs might fly too.",
+            "Only if you do it with dramatic flair.",
+            "It’s complicated. Like your last relationship.",
+            "Why not? Chaos is fun!",
+            "If by 'yes' you mean 'no,' then definitely yes.",
+            "The answer is hidden in a Netflix documentary somewhere.",
+            "I’d say yes, but that might start a chain of regrettable events.",
+            "Your chances are better than a raccoon solving a Rubik’s cube.",
+            "My sources are just vibes and chaos.",
+            "Maybe... in a different timeline.",
+            "Absolutely. But only in theory.",
+            "The answer is 42. Wait, wrong question.",
+            "My crystal ball says... 'try Google'.",
+            "Outlook hazy, try cleaning your screen.",
+            "Affirmative. Unless you're asking if this is a good idea.",
+            "Negative. And don't ask me to elaborate.",
+            "The spirits are currently on lunch break. Try again in an hour.",
+            "It's a secret. Shhh.",
+            "Yes, if you promise to share your snacks.",
+            "No, but I admire your optimism.",
+            "Ask your pet. They know things.",
+            "The answer is blowing in the wind... or maybe that's just dust.",
+            "I'm leaning towards 'yes,' but I've been wrong before. Many times.",
+            "That's a question for future you. Good luck with that.",
+            "My circuits say 'yes,' but my heart says 'run away!'",
+            "Let's just say the universe has a weird sense of humor."
+        ];
+
+        let isShaking = false; // Flag to prevent multiple shakes at once
+
+        // Function to show a message
+        function showMessage(messageText, isError = false) {
+            messageBox.textContent = messageText;
+            messageBox.style.backgroundColor = isError ? '#ef4444' : '#22c55e'; // red-500 for error, green-500 for success
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000); // Hide after 3 seconds
+        }
+
+        // Function to get and display an answer
+        function getAnswer() {
+            // Check if a question is asked
+            if (questionInput.value.trim() === "") {
+                showMessage("Please type a question first, oh wise seeker of knowledge!", true);
+                questionInput.focus();
+                return;
+            }
+
+            if (isShaking) return; // Don't do anything if already shaking
+
+            isShaking = true;
+
+            // Hide previous answer and triangle immediately
+            answerDisplay.style.display = 'none';
+            answerDisplay.style.animation = 'none'; // Reset animation
+            answerTriangle.style.opacity = '0';
+
+
+            // Add shake animation to the 8-ball
+            eightBall.classList.add('shake-animation');
+
+            // Wait for the shake animation to finish
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * funnyAnswers.length);
+                const randomAnswer = funnyAnswers[randomIndex];
+
+                // Display the new answer
+                answerDisplay.textContent = randomAnswer;
+                answerDisplay.style.display = 'block'; // Make it visible
+                answerTriangle.style.opacity = '1'; // Make triangle visible
+
+                // Trigger reflow to restart animation
+                // eslint-disable-next-line no-void
+                void answerDisplay.offsetWidth;
+                answerDisplay.style.animation = 'fadeInText 0.5s ease-in-out 0.5s forwards';
+
+
+                // Remove shake animation class so it can be re-added on next click
+                eightBall.classList.remove('shake-animation');
+                isShaking = false; // Reset flag
+            }, 600); // Corresponds to the duration of the shake animation
+        }
+
+        // Event listener for clicking the 8-ball or the button
+        eightBall.addEventListener('click', getAnswer);
+        askButton.addEventListener('click', getAnswer);
+
+        // Initial message in the answer display
+        answerDisplay.textContent = "Consulting the orb...";
+        answerDisplay.style.display = 'block';
+        answerTriangle.style.opacity = '1'; // Show triangle initially with the prompt
+        answerDisplay.style.animation = 'fadeInText 0.5s ease-in-out forwards';
+
+
+        // Allow pressing Enter in the input field to trigger the answer
+        questionInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent form submission if it were in a form
+                getAnswer();
+            }
+        });
+    </script>
+
+</body>
+</html>

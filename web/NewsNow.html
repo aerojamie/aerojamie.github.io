@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Now</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>">
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            background-color: #f0f2f5; /* Light grey background */
+            color: #1c1e21; /* Dark grey text */
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #1a73e8 0%, #1e90ff 100%); /* Modern gradient background */
+            color: #ffffff;
+            padding: 2em 1em; /* Increased padding */
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Softer, more spread shadow */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle bottom border */
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3em; /* Significantly larger font size */
+            font-weight: 700; /* Bolder */
+            letter-spacing: -0.5px; /* Slightly tighter letter spacing */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Subtle text shadow for depth */
+        }
+
+        header p {
+            margin: 0.5em 0 0;
+            font-size: 1.1em; /* Slightly larger subtitle */
+            opacity: 0.9;
+            font-weight: 300; /* Lighter font weight for subtitle */
+        }
+        .proxy-disclaimer {
+            font-size: 0.85em;
+            background-color: rgba(0,0,0,0.1);
+            padding: 0.5em;
+            border-radius: 4px;
+            margin-top: 1em;
+            display: inline-block;
+        }
+
+        /* Main Content Area */
+        main {
+            flex-grow: 1;
+            padding: 1em;
+            max-width: 1500px; /* Increased max-width for wider screens */
+            margin: 20px auto; /* Added top/bottom margin */
+            width: 95%; /* Use percentage for better responsiveness */
+        }
+
+        /* Loading Indicator */
+        #loading-indicator {
+            text-align: center;
+            font-size: 1.1em;
+            padding: 2.5em;
+            color: #606770;
+            background-color: #ffffff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* News Category Container Styles */
+        .news-category-container {
+            margin-bottom: 2.5em;
+            background-color: #ffffff;
+            padding: 1.5em;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+
+        .news-category-container h2.category-title {
+            margin-top: 0;
+            margin-bottom: 1em;
+            padding-bottom: 0.6em;
+            border-bottom: 1px solid #ccd0d5; /* Lighter border */
+            font-size: 1.6em; /* Slightly reduced font size */
+            font-weight: 600;
+        }
+
+        /* Specific Category Title Colors (Optional) */
+        .left-title { color: #3b5998; } /* A different blue */
+        .center-title { color: #555e6a; } /* Darker grey */
+        .right-title { color: #d32f2f; } /* A red shade */
+
+
+        /* News Grid Layout */
+        .news-grid {
+            display: grid;
+            /* Responsive grid: 1 column on small, 2 on medium, 3 on large screens */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5em; /* Increased gap */
+        }
+
+        /* Individual News Item Styles */
+        .news-item {
+            background-color: #f7f8fa; /* Very light grey for items */
+            border: 1px solid #dddfe2; /* Lighter border */
+            border-radius: 6px;
+            padding: 1.2em; /* Increased padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Ensures source name is at bottom */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            min-height: 120px; /* Minimum height for consistency */
+        }
+
+        .news-item:hover {
+            transform: translateY(-4px); /* Slightly more lift */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* More pronounced shadow */
+        }
+
+        .news-item h3 {
+            margin-top: 0;
+            font-size: 1.1em; /* Adjusted for better readability */
+            font-weight: 500; /* Medium weight for headline */
+            margin-bottom: 0.75em; /* Increased space below headline */
+            color: #050505; /* Almost black for headline */
+        }
+
+        .news-item a {
+            text-decoration: none;
+            color: #1877f2; /* Link color matching header */
+        }
+
+        .news-item a:hover {
+            text-decoration: underline;
+            color: #166fe5; /* Slightly darker blue on hover */
+        }
+
+        .news-item .source-name {
+            font-size: 0.8em;
+            color: #606770; /* Medium grey for source */
+            margin-top: 1em; /* Ensure space above source name */
+            padding-top: 0.6em;
+            border-top: 1px solid #e9ebee; /* Light separator line */
+            align-self: flex-start; /* Align to start if item content is short */
+            width: 100%;
+        }
+
+        /* Footer Styles */
+        footer {
+            text-align: center;
+            padding: 1.5em 1em;
+            background-color: #e9ebee; /* Lighter footer background */
+            color: #606770; /* Medium grey text */
+            font-size: 0.85em;
+            margin-top: 2em;
+            border-top: 1px solid #dddfe2;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em; /* Adjusted for medium screens */
+            }
+            .news-category-container h2.category-title {
+                font-size: 1.4em;
+            }
+            /* news-grid is already responsive due to auto-fit */
+            main {
+                padding: 0.5em;
+                width: 100%;
+            }
+            .news-item {
+                padding: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 1.5em 0.5em; /* Adjusted padding for smaller screens */
+            }
+            header h1 {
+                font-size: 2em; /* Adjusted for small screens */
+            }
+            header p {
+                font-size: 0.9em;
+            }
+            .news-category-container h2.category-title {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>News Now</h1>
+        <p>Headlines from Various Perspectives (Updates every 30 min)</p>
+        <p>Disclaimer: The number of articles under each section is determined by the number of articles each news site publishes</p>
+        <p class="proxy-disclaimer">Note: This site relies on a public CORS proxy to fetch news. The proxy may be temporarily unavailable or rate-limit requests if news fails to load.</p>
+    </header>
+
+    <main>
+        <div id="loading-indicator">Loading news headlines... Please wait.</div>
+
+        <div class="news-category-container">
+            <h2 class="category-title left-title">Left-Leaning</h2>
+            <div id="left-news" class="news-grid"></div>
+        </div>
+
+        <div class="news-category-container">
+            <h2 class="category-title center-title">Center</h2>
+            <div id="center-news" class="news-grid"></div>
+        </div>
+
+        <div class="news-category-container">
+            <h2 class="category-title right-title">Right-Leaning</h2>
+            <div id="right-news" class="news-grid"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            "News Now" aggregates headlines for informational purposes.
+            Categorizations are based on common public perceptions and may be subjective.
+            RSS feeds are provided by respective news organizations. CORS proxy courtesy of relevant provider.
+        </p>
+        <p class="text-sm text-sky-300">&copy; <span id="currentYear"></span> Jamie Sessions.</p>
+
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration
+            // Reverted to api.allorigins.win. This proxy requires the target URL to be encoded.
+            const CORS_PROXY_PREFIX = "https://api.allorigins.win/raw?url="; 
+            const MAX_HEADLINES_PER_SOURCE = 5; // Max headlines to display from each source
+            const UPDATE_INTERVAL = 30 * 60 * 1000; // Auto-update interval: 30 minutes (in milliseconds)
+
+            // DOM Elements
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const newsGrids = {
+                // Maps category names to the DOM elements where their news should be displayed
+                Center: document.getElementById('center-news'),
+                Left: document.getElementById('left-news'),
+                Right: document.getElementById('right-news')
+            };
+
+            // News Sources Configuration
+            // IMPORTANT: RSS feed URLs can change or become inactive. Verify these periodically.
+            const newsSources = [
+                // Center
+                { name: "Associated Press", url: "https://apnews.com/hub/ap-top-news/rss", category: "Center" },
+                { name: "Reuters Top News", url: "http://feeds.reuters.com/reuters/topNews", category: "Center" },
+                { name: "NPR News", url: "https://feeds.npr.org/1001/rss.xml", category: "Center" },
+                // Left-Leaning
+                { name: "The Guardian (World)", url: "https://www.theguardian.com/world/rss", category: "Left" },
+                { name: "Mother Jones", url: "https://www.motherjones.com/feed/", category: "Left" },
+                { name: "HuffPost (Politics)", url: "https://www.huffpost.com/section/politics/feed", category: "Left" },
+                // Right-Leaning
+                { name: "National Review", url: "https://www.nationalreview.com/feed/", category: "Right" },
+                { name: "The Federalist", url: "https://thefederalist.com/feed/", category: "Right" },
+                { name: "Breitbart News", url: "http://feeds.feedburner.com/breitbart", category: "Right" }
+            ];
+
+            /**
+             * Fetches and parses news from a single RSS source.
+             * @param {object} source - The news source object (name, url, category).
+             * @returns {Promise<Array>} A promise that resolves to an array of headline objects.
+             */
+            async function fetchNewsFromSource(source) {
+                // Construct the URL to fetch via the CORS proxy. 
+                const fetchUrl = `${CORS_PROXY_PREFIX}${encodeURIComponent(source.url)}`; 
+                try {
+                    const response = await fetch(fetchUrl, { 
+                        cache: "no-store", 
+                    }); 
+
+                    if (!response.ok) {
+                        console.error(`HTTP error fetching ${source.name}: ${response.status} ${response.statusText} from ${fetchUrl}. Response body (if any):`, await response.text().catch(() => "Could not read response body"));
+                        return []; 
+                    }
+
+                    const str = await response.text();
+                    const parser = new window.DOMParser();
+                    const data = parser.parseFromString(str, "text/xml");
+
+                    const parserError = data.querySelector("parsererror");
+                    if (parserError) {
+                        console.error(`XML Parsing error for ${source.name} from ${fetchUrl}:`, parserError.textContent);
+                        return []; 
+                    }
+
+                    const headlines = [];
+                    const items = data.querySelectorAll("item, entry"); // Common tags for RSS items
+                    
+                    items.forEach((item, index) => {
+                        if (index < MAX_HEADLINES_PER_SOURCE) {
+                            const title = item.querySelector("title")?.textContent?.trim() || "No title available";
+                            let link = item.querySelector("link")?.textContent?.trim();
+
+                            // More robust link finding for different feed structures
+                            if (!link && item.querySelector("link[href]")) { // Atom feeds use <link href="...">
+                                link = item.querySelector("link[href]")?.getAttribute('href')?.trim();
+                            }
+                            else if (!link && item.querySelector("link")) { // Some feeds might just have the link in the textContent of a <link> tag
+                                link = item.querySelector("link")?.textContent?.trim();
+                            }
+                            else if (!link) { // Fallback for <guid isPermaLink="true">
+                                const guid = item.querySelector("guid");
+                                if (guid && (guid.getAttribute("isPermaLink") === "true" || !guid.hasAttribute("isPermaLink"))) { 
+                                    link = guid.textContent?.trim();
+                                }
+                            }
+                             if (!link || link === '#') { 
+                                console.warn(`Could not find a valid link for an item in ${source.name}. Title: ${title.substring(0,50)}... Using '#' as fallback.`);
+                            }
+                            
+                            headlines.push({
+                                title: title,
+                                link: link || "#", 
+                                sourceName: source.name,
+                                category: source.category
+                            });
+                        }
+                    });
+                     if (headlines.length === 0 && items.length > 0 && items.length >= MAX_HEADLINES_PER_SOURCE) {
+                        console.warn(`Source: ${source.name} - Found ${items.length} items, but extracted 0 headlines. Check parsing logic (title/link selectors) for this feed's specific XML structure.`);
+                    }
+                    return headlines;
+                } catch (error) {
+                    // Enhanced error logging
+                    let errorMessage = 'Unknown fetch error';
+                    if (error instanceof Error) {
+                        errorMessage = error.message; // Standard Error object
+                    } else if (typeof error === 'string') {
+                        errorMessage = error; // If error is just a string
+                    } else if (error && typeof error.toString === 'function') {
+                        errorMessage = error.toString(); // Fallback to toString()
+                    }
+                    
+                    console.error(`General error processing ${source.name} (${source.url}) via ${fetchUrl}: ${errorMessage}`);
+                    if (error instanceof Error && error.stack) {
+                        console.error("Stack trace for " + source.name + ":", error.stack);
+                    }
+                    
+                    const errorKeys = error && typeof error === 'object' ? Object.keys(error) : [];
+                    if (errorKeys.length > 0) {
+                         console.error("Full error object for " + source.name + ":", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+                    } else if (typeof error !== 'object' || error === null) {
+                         console.error("Error object for " + source.name + " is not a non-null object:", error);
+                    } else {
+                         console.error("Full error object for " + source.name + " appears empty or non-standard.");
+                    }
+                    return []; 
+                }
+            }
+
+            /**
+             * Displays the fetched headlines in the appropriate grid on the page.
+             * @param {Array} allHeadlines - An array of all headline objects from all sources.
+             */
+            function displayHeadlines(allHeadlines) {
+                Object.values(newsGrids).forEach(grid => {
+                    if (grid) grid.innerHTML = '';
+                });
+
+                if (allHeadlines.length === 0) {
+                    if (loadingIndicator) loadingIndicator.textContent = "Could not load any news at this time. This might be due to issues with the public CORS proxy or the news feeds themselves. Please try refreshing later or check the console for errors.";
+                    return;
+                }
+
+                allHeadlines.forEach(headline => {
+                    const grid = newsGrids[headline.category]; 
+                    if (!grid) {
+                        console.warn(`No display grid found for category: ${headline.category} (Source: ${headline.sourceName})`);
+                        return; 
+                    }
+
+                    const newsItemDiv = document.createElement('div');
+                    newsItemDiv.className = 'news-item';
+
+                    const titleElement = document.createElement('h3');
+                    const linkElement = document.createElement('a');
+                    linkElement.href = headline.link;
+                    linkElement.textContent = headline.title;
+                    linkElement.target = "_blank"; 
+                    linkElement.rel = "noopener noreferrer"; 
+
+                    titleElement.appendChild(linkElement);
+                    newsItemDiv.appendChild(titleElement);
+
+                    const sourceNameElement = document.createElement('span');
+                    sourceNameElement.className = 'source-name';
+                    sourceNameElement.textContent = headline.sourceName;
+                    newsItemDiv.appendChild(sourceNameElement);
+
+                    grid.appendChild(newsItemDiv);
+                });
+            }
+
+            /**
+             * Orchestrates fetching news from all sources and then displaying them.
+             */
+            async function loadAllNews() {
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'block'; 
+                    loadingIndicator.textContent = 'Loading news headlines... Please wait.';
+                }
+
+                let allFetchedHeadlines = [];
+                const fetchPromises = newsSources.map(source => fetchNewsFromSource(source));
+
+                try {
+                    const results = await Promise.allSettled(fetchPromises);
+
+                    results.forEach(result => {
+                        if (result.status === "fulfilled" && result.value) {
+                            allFetchedHeadlines = allFetchedHeadlines.concat(result.value);
+                        } else if (result.status === "rejected") {
+                            console.error("A news source fetch promise was rejected:", result.reason);
+                        }
+                    });
+
+                    if (loadingIndicator) loadingIndicator.style.display = 'none'; 
+                    displayHeadlines(allFetchedHeadlines);
+
+                } catch (error) {
+                    console.error("Critical error during loading of all news sources:", error);
+                    if (loadingIndicator) {
+                        loadingIndicator.textContent = "A critical error occurred while loading news. Please check the console.";
+                    }
+                }
+            }
+
+            // Initial load of news when the page is ready
+            loadAllNews();
+
+            // Set up auto-update to refresh news periodically
+            setInterval(loadAllNews, UPDATE_INTERVAL);
+        });
+    </script>
+</body>
+</html>

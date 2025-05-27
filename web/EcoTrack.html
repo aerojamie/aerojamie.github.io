@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Accountability Tracker - Dark Theme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #1a202c; /* bg-slate-900 */
+            /* Subtle gradient background */
+            background-image: linear-gradient(to bottom right, #1a202c, #2d3748); /* slate-900 to slate-800 */
+            color: #e2e8f0; /* text-slate-200 */
+        }
+        .activity-card, .results-card, .tips-card {
+            background-color: #2d3748; /* bg-slate-800 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg adjusted for dark */
+            padding: 1.5rem; /* p-6 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            border: 1px solid #4a5568; /* border-slate-700 */
+        }
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem; /* mb-2 */
+            font-weight: 500; /* font-medium */
+            color: #a0aec0; /* text-slate-400 */
+        }
+        .number-input {
+            width: 100%;
+            padding: 0.75rem; /* p-3 */
+            border: 1px solid #4a5568; /* border-slate-600 */
+            background-color: #1a202c; /* bg-slate-900 */
+            color: #e2e8f0; /* text-slate-200 */
+            border-radius: 0.375rem; /* rounded-md */
+            box-sizing: border-box;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .number-input::placeholder {
+            color: #718096; /* text-slate-500 */
+        }
+        .number-input:focus {
+            border-color: #48bb78; /* border-green-500 */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.3); /* ring-green-500 ring-opacity-30 */
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem; /* mb-2 */
+            color: #a0aec0; /* text-slate-400 */
+        }
+        .checkbox-input {
+            margin-right: 0.5rem; /* mr-2 */
+            height: 1rem; /* h-4 */
+            width: 1rem; /* w-4 */
+            accent-color: #48bb78; /* green-500 */
+            background-color: #4a5568; /* bg-slate-700 */
+            border-radius: 0.125rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-weight: 600; /* font-semibold */
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+        }
+        .btn-primary {
+            background-color: #38a169; /* bg-green-600 */
+            color: white;
+            border-color: #38a169;
+        }
+        .btn-primary:hover {
+            background-color: #2f855a; /* bg-green-700 */
+            border-color: #2f855a;
+            box-shadow: 0 0 10px rgba(56, 161, 105, 0.5);
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .btn-secondary {
+            background-color: #4a5568; /* bg-slate-700 */
+            color: #e2e8f0; /* text-slate-200 */
+            border-color: #718096; /* border-slate-500 */
+        }
+        .btn-secondary:hover {
+            background-color: #2d3748; /* bg-slate-800 */
+            border-color: #a0aec0; /* border-slate-400 */
+        }
+        .btn-secondary:active {
+            transform: scale(0.98);
+        }
+        .btn-ai {
+            background-color: #3182ce; /* bg-blue-600 */
+            color: white;
+            border-color: #3182ce;
+        }
+        .btn-ai:hover {
+            background-color: #2b6cb0; /* bg-blue-700 */
+            border-color: #2b6cb0;
+            box-shadow: 0 0 10px rgba(49, 130, 206, 0.5);
+        }
+        .btn-ai:active {
+            transform: scale(0.98);
+        }
+        .appliance-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem; /* gap-2 */
+            padding: 1rem; /* p-4 */
+            border: 1px solid #4a5568; /* border-slate-700 */
+            background-color: #1a202c; /* bg-slate-900 slightly darker */
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+        .appliance-item-horizontal {
+             display: flex;
+             flex-direction: row;
+             align-items: center;
+             justify-content: space-between;
+             gap: 0.5rem; /* gap-2 */
+             padding: 1rem; /* p-4 */
+             border: 1px solid #4a5568; /* border-slate-700 */
+             background-color: #1a202c; /* bg-slate-900 slightly darker */
+             border-radius: 0.5rem; /* rounded-lg */
+        }
+        .appliance-item-horizontal .number-input {
+            width: 6rem; /* w-24 */
+        }
+        .results-highlight {
+            color: #68d391; /* text-green-400 */
+            font-weight: 700; /* font-bold */
+        }
+        #equivalenciesList li, #geminiTipsList li {
+            padding: 0.25rem 0;
+            color: #cbd5e0; /* text-slate-300 */
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #68d391; /* green-400 */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Text color adjustments for headings and specific elements */
+        h1, h2, h3 {
+            color: #e2e8f0; /* text-slate-200 or a brighter white like text-slate-100 */
+        }
+        header h1 {
+             color: #68d391; /* text-green-400 for main title */
+        }
+        header p {
+            color: #a0aec0; /* text-slate-400 */
+        }
+        .activity-card h2, .results-card h2, .tips-card h2 {
+            color: #9f7aea; /* text-purple-400 for card titles */
+        }
+        .results-card h3, #geminiTipsSection h3 {
+            color: #63b3ed; /* text-blue-400 */
+        }
+         .intro-box { /* Custom class for the intro box */
+            background-color: rgba(45, 55, 72, 0.7); /* bg-slate-800 with some transparency */
+            border: 1px solid #4a5568; /* border-slate-700 */
+            color: #e2e8f0; /* text-slate-200 */
+        }
+        .text-slate-500 { /* Overriding Tailwind's default for this specific class if used in HTML */
+            color: #a0aec0 !important; /* text-slate-400 */
+        }
+        .text-slate-600 {
+            color: #cbd5e0 !important; /* text-slate-300 */
+        }
+         .text-slate-700 {
+            color: #e2e8f0 !important; /* text-slate-200 */
+        }
+        .text-emerald-800 {
+            color: #68d391 !important; /* text-green-400 */
+        }
+        .border-emerald-200 {
+            border-color: #38a169 !important; /* border-green-600 */
+        }
+        .bg-emerald-50 {
+            background-color: rgba(20, 83, 45, 0.3) !important; /* A dark, transparent green */
+        }
+
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4 md:px-8">
+
+    <div class="container mx-auto max-w-3xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold">EcoTrack</h1>
+            <p class="mt-2 text-lg">Understand your daily energy footprint.</p>
+        </header>
+
+        <div class="mb-8 p-6 rounded-lg intro-box">
+            <p class="text-lg">Welcome! This tool helps you estimate your daily energy consumption based on common activities. Enter your usage below to see your impact and discover how that energy could be used in other ways. All calculations are estimates for educational purposes.</p>
+        </div>
+
+        <form id="ecoForm">
+            <div class="activity-card">
+                <h2 class="text-2xl font-semibold mb-4">💡 Lighting</h2>
+                <div>
+                    <label for="lightBulbs" class="input-label">Number of LED Bulbs (approx. 10W each):</label>
+                    <input type="number" id="lightBulbs" name="lightBulbs" min="0" value="0" class="number-input">
+                </div>
+                <div class="mt-4">
+                    <label for="lightHours" class="input-label">Total Hours Used Today:</label>
+                    <input type="number" id="lightHours" name="lightHours" min="0" step="0.5" value="0" class="number-input">
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h2 class="text-2xl font-semibold mb-4">🚗 Driving (Gasoline Car)</h2>
+                <div>
+                    <label for="driveHours" class="input-label">Hours Spent Driving Today:</label>
+                    <input type="number" id="driveHours" name="driveHours" min="0" step="0.25" value="0" class="number-input">
+                    <p class="text-xs mt-1 text-slate-500">Assumes average speed of 30 mph and 25 mpg fuel efficiency.</p>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h2 class="text-2xl font-semibold mb-4">🔌 Appliances</h2>
+                <p class="mb-4 text-slate-300">Enter usage for appliances you used today.</p>
+                
+                <div id="appliancesHourlyContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    </div>
+
+                <div id="appliancesOnOffContainer" class="space-y-3 mb-6">
+                    </div>
+
+                <div id="appliancesPerCycleContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 my-8">
+                <button type="button" id="calculateBtn" class="btn btn-primary w-full sm:w-auto flex-grow">Calculate My Impact</button>
+                <button type="reset" id="resetBtn" class="btn btn-secondary w-full sm:w-auto">Reset Form</button>
+            </div>
+        </form>
+
+        <div id="resultsSection" class="results-card hidden">
+            <h2 class="text-2xl font-semibold mb-4">📊 Your Estimated Daily Energy Impact</h2>
+            <p class="text-lg mb-2">Total Energy Consumed: <span id="totalKWh" class="results-highlight">0</span> kWh</p>
+            <div class="mt-4">
+                <h3 class="text-xl font-semibold mb-2">This energy could have:</h3>
+                <ul id="equivalenciesList" class="list-disc list-inside space-y-1">
+                    </ul>
+            </div>
+            <div class="mt-6">
+                 <button type="button" id="getGeminiTipsBtn" class="btn btn-ai w-full">✨ Get Personalized Eco Tips</button>
+            </div>
+            <div id="geminiTipsSection" class="mt-6 hidden">
+                <h3 class="text-xl font-semibold mb-2">🌿 Personalized Eco Tips:</h3>
+                <div id="geminiTipsLoading" class="flex items-center my-2 hidden">
+                    <div class="loading-spinner"></div>
+                    Generating tips...
+                </div>
+                <ul id="geminiTipsList" class="list-disc list-inside space-y-1">
+                    </ul>
+                <p id="geminiTipsError" class="text-red-400 mt-2 hidden"></p> </div>
+             <p class="text-xs mt-6 text-slate-500">Note: Energy calculations and tips are estimations for educational purposes. Actual consumption and savings can vary.</p>
+        </div>
+
+        <div class="tips-card mt-10">
+            <h2 class="text-2xl font-semibold mb-4">💡 General Energy Saving Tips</h2>
+            <ul class="list-disc list-inside space-y-2">
+                <li>Switch to LED lighting: They use up to 75% less energy and last much longer.</li>
+                <li>Unplug electronics when not in use: Many devices consume "phantom power" even when off.</li>
+                <li>Use smart power strips: They can cut power to devices that are not in use.</li>
+                <li>Wash clothes in cold water: Heating water accounts for a significant portion of a washing machine's energy use.</li>
+                <li>Air dry clothes when possible instead of using a dryer.</li>
+                <li>Choose energy-efficient appliances: Look for the Energy Star label.</li>
+            </ul>
+        </div>
+
+        <footer class="text-center mt-12 mb-6">
+            <p class="text-sm text-slate-500">EcoTrack | Created for educational purposes.</p>
+            <p class="text-sm text-sky-300">&copy; <span id="currentYear"></span> Jamie Sessions.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- DATA CONSTANTS ---
+        const APPLIANCE_DATA = {
+            hourly: [
+                { id: "television", name: "Television (LED, 40-50 inch)", wattage: 70 },
+                { id: "laptop", name: "Laptop", wattage: 50 },
+                { id: "desktopComputer", name: "Desktop Computer + Monitor", wattage: 200 },
+                { id: "microwave", name: "Microwave Oven (usage in minutes)", wattage: 1200, unit: "minutes" },
+                { id: "acWindow", name: "Window AC Unit", wattage: 1000 },
+                { id: "acCentral", name: "Central AC Unit", wattage: 3500 },
+                { id: "fanCeiling", name: "Ceiling Fan", wattage: 75 },
+                { id: "fanPortable", name: "Portable Fan", wattage: 50 },
+                { id: "gamingConsole", name: "Gaming Console (while playing)", wattage: 150 },
+                { id: "ovenElectric", name: "Electric Oven (baking/roasting)", wattage: 2500 }
+            ],
+            onOff: [
+                { id: "refrigerator", name: "Refrigerator (is it running today?)", daily_kwh: 1.5 }
+            ],
+            perCycle: [
+                { id: "washingMachine", name: "Washing Machine (cycles)", kwh_per_cycle: 1.0 },
+                { id: "dryerElectric", name: "Electric Clothes Dryer (cycles)", kwh_per_cycle: 3.5 },
+                { id: "dishwasher", name: "Dishwasher (cycles)", kwh_per_cycle: 1.5 },
+                { id: "coffeeMaker", name: "Coffee Maker (brews/pots)", kwh_per_cycle: 0.1 },
+                { id: "kettle", name: "Electric Kettle (boils)", kwh_per_cycle: 0.1 }
+            ]
+        };
+
+        const ENERGY_CONSTANTS = {
+            ledBulbWattage: 10, // Watts
+            drivingAvgMph: 30, // miles per hour
+            drivingAvgMpg: 25, // miles per gallon
+            kwhPerGallonGas: 33.7 // kWh per gallon of gasoline
+        };
+
+        const EQUIVALENCIES = {
+            smartphoneChargeWh: 10, // Watt-hours per charge
+            ledBulb10WPoweredHoursPerKWh: 100, // For a 10W bulb, 1 kWh powers it for 100 hours
+            laptop50WPoweredHoursPerKWh: 20, // For a 50W laptop
+            electricCarMilesPerKWh: 3.5 // Average miles an EV can travel per kWh
+        };
+
+        // --- DOM ELEMENTS ---
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const totalKWhEl = document.getElementById('totalKWh');
+        const equivalenciesListEl = document.getElementById('equivalenciesList');
+        const ecoForm = document.getElementById('ecoForm');
+
+        const appliancesHourlyContainer = document.getElementById('appliancesHourlyContainer');
+        const appliancesOnOffContainer = document.getElementById('appliancesOnOffContainer');
+        const appliancesPerCycleContainer = document.getElementById('appliancesPerCycleContainer');
+
+        const getGeminiTipsBtn = document.getElementById('getGeminiTipsBtn');
+        const geminiTipsSection = document.getElementById('geminiTipsSection');
+        const geminiTipsListEl = document.getElementById('geminiTipsList');
+        const geminiTipsLoadingEl = document.getElementById('geminiTipsLoading');
+        const geminiTipsErrorEl = document.getElementById('geminiTipsError');
+        
+        let currentTotalKWh = 0; // To store the calculated kWh for Gemini API
+
+        // --- FUNCTIONS ---
+
+        /**
+         * Populate appliance input fields into the DOM
+         */
+        function populateAppliances() {
+            // Clear existing appliance inputs if any (e.g., on a hot reload or re-population)
+            appliancesHourlyContainer.innerHTML = '';
+            appliancesOnOffContainer.innerHTML = '';
+            appliancesPerCycleContainer.innerHTML = '';
+
+            APPLIANCE_DATA.hourly.forEach(app => {
+                const unitLabel = app.unit === "minutes" ? "Minutes" : "Hours";
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'appliance-item';
+                itemDiv.innerHTML = `
+                    <label for="${app.id}" class="input-label text-sm">${app.name}:</label>
+                    <input type="number" id="${app.id}" name="${app.id}" min="0" step="${app.unit === 'minutes' ? '1' : '0.1'}" value="0" class="number-input" placeholder="${unitLabel} used">
+                `;
+                appliancesHourlyContainer.appendChild(itemDiv);
+            });
+
+            APPLIANCE_DATA.onOff.forEach(app => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'appliance-item-horizontal';
+                itemDiv.innerHTML = `
+                    <label for="${app.id}" class="checkbox-label flex-grow">${app.name}</label>
+                    <input type="checkbox" id="${app.id}" name="${app.id}" class="checkbox-input transform scale-125">
+                `;
+                appliancesOnOffContainer.appendChild(itemDiv);
+            });
+
+            APPLIANCE_DATA.perCycle.forEach(app => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'appliance-item';
+                itemDiv.innerHTML = `
+                    <label for="${app.id}" class="input-label text-sm">${app.name}:</label>
+                    <input type="number" id="${app.id}" name="${app.id}" min="0" value="0" class="number-input" placeholder="Number of cycles">
+                `;
+                appliancesPerCycleContainer.appendChild(itemDiv);
+            });
+        }
+
+        function getNumericValue(id) {
+            const el = document.getElementById(id);
+            return el ? parseFloat(el.value) || 0 : 0;
+        }
+
+        function getCheckboxState(id) {
+            const el = document.getElementById(id);
+            return el ? el.checked : false;
+        }
+        
+        function getEnergyBreakdown() {
+            const breakdown = {
+                lightingKWh: 0,
+                drivingKWh: 0,
+                appliancesKWh: 0,
+                mainContributors: [] 
+            };
+
+            const lightBulbs = getNumericValue('lightBulbs');
+            const lightHours = getNumericValue('lightHours');
+            if (lightBulbs > 0 && lightHours > 0) {
+                breakdown.lightingKWh = (lightBulbs * ENERGY_CONSTANTS.ledBulbWattage * lightHours) / 1000;
+            }
+
+            const driveHours = getNumericValue('driveHours');
+            if (driveHours > 0) {
+                const distance = driveHours * ENERGY_CONSTANTS.drivingAvgMph;
+                const gallonsUsed = distance / ENERGY_CONSTANTS.drivingAvgMpg;
+                breakdown.drivingKWh = gallonsUsed * ENERGY_CONSTANTS.kwhPerGallonGas;
+            }
+            
+            let applianceDetails = [];
+            APPLIANCE_DATA.hourly.forEach(app => {
+                let hoursUsed = getNumericValue(app.id);
+                if (hoursUsed > 0) {
+                    if (app.unit === "minutes") { hoursUsed = hoursUsed / 60; }
+                    const kwh = (app.wattage * hoursUsed) / 1000;
+                    breakdown.appliancesKWh += kwh;
+                    if (kwh > 0) applianceDetails.push({ name: app.name, kwh: kwh });
+                }
+            });
+            APPLIANCE_DATA.onOff.forEach(app => {
+                if (getCheckboxState(app.id)) {
+                    breakdown.appliancesKWh += app.daily_kwh;
+                     if (app.daily_kwh > 0) applianceDetails.push({ name: app.name, kwh: app.daily_kwh });
+                }
+            });
+            APPLIANCE_DATA.perCycle.forEach(app => {
+                const cycles = getNumericValue(app.id);
+                if (cycles > 0) {
+                    const kwh = app.kwh_per_cycle * cycles;
+                    breakdown.appliancesKWh += kwh;
+                    if (kwh > 0) applianceDetails.push({ name: app.name, kwh: kwh });
+                }
+            });
+
+            applianceDetails.sort((a, b) => b.kwh - a.kwh);
+            breakdown.mainContributors = applianceDetails.slice(0, 3).map(app => app.name).filter(name => name); // Top 3, ensure names exist
+
+            return breakdown;
+        }
+
+
+        function calculateEnergy() {
+            const breakdown = getEnergyBreakdown();
+            currentTotalKWh = breakdown.lightingKWh + breakdown.drivingKWh + breakdown.appliancesKWh;
+            displayResults(currentTotalKWh);
+            geminiTipsSection.classList.add('hidden');
+            geminiTipsListEl.innerHTML = '';
+            geminiTipsErrorEl.classList.add('hidden');
+        }
+
+        function displayResults(kwh) {
+            totalKWhEl.textContent = kwh.toFixed(2);
+            equivalenciesListEl.innerHTML = ''; 
+
+            if (kwh > 0) {
+                const smartphoneCharges = (kwh * 1000) / EQUIVALENCIES.smartphoneChargeWh;
+                addEquivalencyItem(`Charged <span class="results-highlight">${Math.round(smartphoneCharges)}</span> smartphones.`);
+                const ledHours = kwh * EQUIVALENCIES.ledBulb10WPoweredHoursPerKWh;
+                addEquivalencyItem(`Powered a 10W LED bulb for <span class="results-highlight">${Math.round(ledHours)}</span> hours.`);
+                const laptopHours = kwh * EQUIVALENCIES.laptop50WPoweredHoursPerKWh;
+                addEquivalencyItem(`Run a laptop (50W) for <span class="results-highlight">${Math.round(laptopHours)}</span> hours.`);
+                const evMiles = kwh * EQUIVALENCIES.electricCarMilesPerKWh;
+                addEquivalencyItem(`Allowed an electric car to travel approx. <span class="results-highlight">${evMiles.toFixed(1)}</span> miles.`);
+                getGeminiTipsBtn.classList.remove('hidden'); 
+            } else {
+                 addEquivalencyItem("Enter some activities to see equivalencies!");
+                 getGeminiTipsBtn.classList.add('hidden'); 
+            }
+
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function addEquivalencyItem(text) {
+            const li = document.createElement('li');
+            li.innerHTML = text; 
+            equivalenciesListEl.appendChild(li);
+        }
+
+        async function fetchGeminiTips() {
+            geminiTipsSection.classList.remove('hidden');
+            geminiTipsLoadingEl.classList.remove('hidden');
+            geminiTipsListEl.innerHTML = '';
+            geminiTipsErrorEl.classList.add('hidden');
+            getGeminiTipsBtn.disabled = true; 
+
+            const energyBreakdown = getEnergyBreakdown();
+            let prompt = `My estimated daily energy consumption is ${currentTotalKWh.toFixed(2)} kWh. `;
+            if (currentTotalKWh > 0) {
+                prompt += `Key areas of consumption are: `;
+                let areas = [];
+                if (energyBreakdown.lightingKWh > 0) areas.push(`Lighting (${energyBreakdown.lightingKWh.toFixed(2)} kWh)`);
+                if (energyBreakdown.drivingKWh > 0) areas.push(`Driving (${energyBreakdown.drivingKWh.toFixed(2)} kWh)`);
+                if (energyBreakdown.appliancesKWh > 0) {
+                    let applianceString = `Appliances (${energyBreakdown.appliancesKWh.toFixed(2)} kWh)`;
+                    if(energyBreakdown.mainContributors.length > 0){
+                        applianceString += `, particularly: ${energyBreakdown.mainContributors.join(', ')}`;
+                    }
+                    areas.push(applianceString);
+                }
+                prompt += areas.join('; ') + ". ";
+            }
+            prompt += "Please provide 3-5 concise, actionable, and personalized tips to help me reduce my energy consumption, focusing on my key areas. Format each tip as a list item (e.g., starting with '- ' or '* '). Be encouraging and practical.";
+            
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("Gemini API Error:", errorData);
+                    throw new Error(`API request failed: ${response.status} ${response.statusText}. ${errorData?.error?.message || 'Please try again.'}`);
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    const tips = text.split('\n').map(tip => tip.trim().replace(/^[-*]\s*/,'')).filter(tip => tip.length > 0);
+                    if (tips.length > 0) {
+                        tips.forEach(tipText => {
+                            const li = document.createElement('li');
+                            li.textContent = tipText;
+                            geminiTipsListEl.appendChild(li);
+                        });
+                    } else {
+                         throw new Error("Received empty or invalid tips format from API.");
+                    }
+                } else {
+                    throw new Error("No valid tips received from the API. The response structure might be unexpected.");
+                }
+            } catch (error) {
+                console.error('Error fetching Gemini tips:', error);
+                geminiTipsErrorEl.textContent = `Error: ${error.message || "Could not fetch tips. Please try again later."}`;
+                geminiTipsErrorEl.classList.remove('hidden');
+                 const li = document.createElement('li');
+                 li.textContent = "Could not load personalized tips at this moment. Please check the general tips below or try again.";
+                 geminiTipsListEl.appendChild(li);
+            } finally {
+                geminiTipsLoadingEl.classList.add('hidden');
+                getGeminiTipsBtn.disabled = false; 
+                geminiTipsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        calculateBtn.addEventListener('click', calculateEnergy);
+        
+        resetBtn.addEventListener('click', () => {
+            ecoForm.reset(); 
+            resultsSection.classList.add('hidden');
+            geminiTipsSection.classList.add('hidden');
+            geminiTipsListEl.innerHTML = '';
+            geminiTipsErrorEl.classList.add('hidden');
+            totalKWhEl.textContent = '0';
+            equivalenciesListEl.innerHTML = '';
+            currentTotalKWh = 0;
+            getGeminiTipsBtn.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        getGeminiTipsBtn.addEventListener('click', fetchGeminiTips);
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateAppliances();
+            getGeminiTipsBtn.classList.add('hidden'); 
+        });
+
+    </script>
+</body>
+</html>
