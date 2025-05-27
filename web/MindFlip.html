@@ -9,19 +9,19 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Light gray background */
+            /* Dark theme background applied via Tailwind */
         }
         .notecard {
-            background-color: white;
+            /* background-color: #1f2937; /* bg-slate-800 */
             border-radius: 0.5rem; /* 8px */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            /* box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); */ /* Replaced by Tailwind */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
             perspective: 1000px; /* For 3D flip effect */
         }
         .notecard:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            /* box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); */ /* Replaced by Tailwind */
         }
         .notecard-inner {
             position: relative;
@@ -46,9 +46,14 @@
             padding: 1rem; /* 16px */
             border-radius: 0.5rem; /* 8px */
         }
+        /* Front of the card will use Tailwind: bg-slate-700 text-slate-100 */
+        .notecard-front {
+             background-color: #374151; /* slate-700 */
+             color: #f3f4f6; /* slate-100 */
+        }
         .notecard-back {
-            background-color: #e0f2fe; /* Light blue for back */
-            color: #0c4a6e; /* Darker blue text */
+            background-color: #4b5563; /* slate-600 */
+            color: #93c5fd; /* blue-300 for contrast and visual distinction */
             transform: rotateY(180deg);
         }
         .notecard-content {
@@ -56,14 +61,15 @@
             max-height: 100%;
         }
         .notecard-content::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
         .notecard-content::-webkit-scrollbar-thumb {
-            background-color: #9ca3af;
-            border-radius: 3px;
+            background-color: #4b5563; /* slate-600 */
+            border-radius: 4px;
         }
         .notecard-content::-webkit-scrollbar-track {
-            background-color: transparent;
+            background-color: #1f2937; /* slate-800 */
+            border-radius: 4px;
         }
 
         /* Modal styles */
@@ -76,193 +82,217 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0,0,0,0.6); /* Darker overlay */
         }
         .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto; /* Adjusted margin for better centering */
-            padding: 20px;
-            border: 1px solid #888;
+            background-color: #1f2937; /* slate-800 */
+            color: #d1d5db; /* slate-300 */
+            margin: 10% auto;
+            padding: 24px; /* Increased padding */
+            border: 1px solid #374151; /* slate-700 */
             width: 90%;
             max-width: 500px;
-            border-radius: 0.5rem;
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3), 0 8px 10px -6px rgba(0,0,0,0.3); /* Softer shadow for dark */
         }
         .close-button {
-            color: #aaa;
+            color: #9ca3af; /* slate-400 */
             float: right;
             font-size: 28px;
             font-weight: bold;
+            transition: color 0.2s ease;
         }
         .close-button:hover,
         .close-button:focus {
-            color: black;
+            color: #f3f4f6; /* slate-100 */
             text-decoration: none;
             cursor: pointer;
         }
+
         /* Button styling */
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.375rem;
+            padding: 0.65rem 1.25rem; /* Slightly adjusted padding */
+            border-radius: 0.375rem; /* 6px */
             font-weight: 500;
-            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out, transform 0.1s ease;
             cursor: pointer;
-            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
+            /* box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); /* Subtle shadow */
+            border: 1px solid transparent; /* For consistent sizing */
         }
         .btn:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
         }
         .btn:hover:not(:disabled) {
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            /* box-shadow: 0 2px 4px -1px rgba(0,0,0,0.06), 0 2px 4px -1px rgba(0,0,0,0.06); */
+            transform: translateY(-1px); /* Subtle lift */
         }
         .btn-primary {
-            background-color: #2563eb; color: white;
+            background-color: #3b82f6; /* blue-500 */ color: white;
+            border-color: #2563eb; /* blue-600 */
         }
         .btn-primary:hover:not(:disabled) {
-            background-color: #1d4ed8;
+            background-color: #2563eb; /* blue-600 */
         }
         .btn-secondary {
-            background-color: #4b5563; color: white;
+            background-color: #4b5563; /* slate-600 */ color: white;
+            border-color: #374151; /* slate-700 */
         }
         .btn-secondary:hover:not(:disabled) {
-            background-color: #374151;
+            background-color: #374151; /* slate-700 */
         }
         .btn-danger {
-            background-color: #dc2626; color: white;
+            background-color: #ef4444; /* red-500 */ color: white;
+            border-color: #dc2626; /* red-600 */
         }
         .btn-danger:hover:not(:disabled) {
-            background-color: #b91c1c;
+            background-color: #dc2626; /* red-600 */
         }
         .btn-success {
-            background-color: #16a34a; color: white;
+            background-color: #22c55e; /* green-500 */ color: white;
+            border-color: #16a34a; /* green-600 */
         }
         .btn-success:hover:not(:disabled) {
-            background-color: #15803d;
+            background-color: #16a34a; /* green-600 */
         }
         .btn-warning {
-            background-color: #f59e0b; color: white; /* Amber-500 */
+            background-color: #f59e0b; /* amber-500 */ color: #1f2937; /* slate-800 for contrast */
+            border-color: #d97706; /* amber-600 */
         }
         .btn-warning:hover:not(:disabled) {
-            background-color: #d97706; /* Amber-600 */
+            background-color: #d97706; /* amber-600 */
         }
         .btn-icon {
-            padding: 0.5rem; background-color: transparent; color: #6b7280;
+            padding: 0.5rem; background-color: transparent; color: #9ca3af; /* slate-400 */
+            border: none;
         }
         .btn-icon:hover:not(:disabled) {
-            color: #1f2937; background-color: #e5e7eb;
+            color: #e5e7eb; /* slate-200 */ background-color: #374151; /* slate-700 */
         }
 
         /* Study Mode Specific Styles */
         #studySessionInterface {
-            background-color: white;
+            /* background-color: #1f2937; /* slate-800 - applied via Tailwind */
             border-radius: 0.75rem; /* 12px */
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            /* box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* Applied via Tailwind */
             padding: 2rem; /* 32px */
             margin-top: 2rem; /* 32px */
         }
         #studyCardDisplay {
-            min-height: 200px; /* Ensure space for card content */
-            border: 1px solid #e5e7eb; /* Gray-200 */
+            min-height: 250px; /* Increased height */
+            border: 1px solid #374151; /* slate-700 */
+            background-color: #111827; /* slate-900, darker for card display area */
             border-radius: 0.5rem; /* 8px */
             display: flex;
-            flex-direction: column; /* Stack term and definition */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 1.5rem; /* 24px */
-            background-color: #f9fafb; /* Gray-50 */
         }
-        #studyCardTerm, #studyCardDefinitionContent { /* Renamed for clarity */
+        #studyCardTerm, #studyCardDefinitionContent {
             font-size: 1.25rem; /* 20px */
             line-height: 1.75rem; /* 28px */
-            color: #1f2937; /* Gray-800 */
-            word-break: break-word; /* Prevent long words from overflowing */
+            color: #e5e7eb; /* slate-200 */
+            word-break: break-word;
         }
-        #studyCardDefinition { /* This is the container for the definition */
-             margin-top: 1rem; /* 16px */
+        #studyCardDefinition {
+            margin-top: 1rem; /* 16px */
         }
-        #studyCardDefinitionContent { /* This is the actual text content */
-            color: #0c4a6e; /* Darker blue for definition */
+        #studyCardDefinitionContent {
+            color: #93c5fd; /* blue-300 for definition text */
             font-style: italic;
         }
         #studyResultsList li {
-            background-color: #fee2e2; /* Red-100 */
-            color: #991b1b; /* Red-800 */
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
+            background-color: #450a0a; /* red-900 darker */
+            color: #fecaca; /* red-200 */
+            padding: 0.75rem 1rem; /* Increased padding */
+            border-radius: 0.375rem; /* 6px */
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
+            border: 1px solid #7f1d1d; /* red-800 */
         }
-         #studyResultsList li strong {
+        #studyResultsList li strong {
             font-weight: 600;
+            color: #fda4af; /* red-300 */
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800">
+<body class="bg-slate-900 text-slate-200 min-h-screen flex flex-col">
 
-    <header class="bg-white shadow-md sticky top-0 z-40">
+    <header class="bg-slate-800 shadow-lg sticky top-0 z-40">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
-            <h1 class="text-3xl font-bold text-blue-600">MindFlip</h1>
-            <div class="mt-3 sm:mt-0 flex flex-wrap gap-2 justify-center">
+            <h1 class="text-3xl font-bold text-sky-400">MindFlip</h1>
+            <div class="mt-3 sm:mt-0 flex flex-wrap gap-3 justify-center items-center">
                 <button id="studyNotesBtn" class="btn btn-warning">Study Notes</button>
-                <button id="saveCardsBtn" class="btn btn-primary">Save Cards</button>
-                <button id="exportCardsBtn" class="btn btn-secondary">Export Cards</button>
-                <label for="importFile" class="btn btn-secondary cursor-pointer">
-                    Import Cards
-                    <input type="file" id="importFile" accept=".json" class="hidden">
-                </label>
-                 <button id="clearAllBtn" class="btn btn-danger">Clear All Cards</button>
+                <div class="flex gap-2">
+                    <button id="saveCardsBtn" class="btn btn-primary">Save</button>
+                    <button id="exportCardsBtn" class="btn btn-secondary">Export</button>
+                    <label for="importFile" class="btn btn-secondary cursor-pointer">
+                        Import
+                        <input type="file" id="importFile" accept=".json" class="hidden">
+                    </label>
+                </div>
+                <button id="clearAllBtn" class="btn btn-danger">Clear All</button>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <div id="mainContentArea">
-            <section id="addNotecardSection" aria-labelledby="addNotecardHeading" class="mb-8 p-6 bg-white rounded-lg shadow-lg">
-                <h2 id="addNotecardHeading" class="text-2xl font-semibold mb-4 text-slate-700">Create a New Notecard</h2>
-                <form id="addNotecardForm" class="space-y-4">
+            <section id="addNotecardSection" aria-labelledby="addNotecardHeading" class="mb-8 p-6 bg-slate-800 rounded-lg shadow-xl">
+                <h2 id="addNotecardHeading" class="text-2xl font-semibold mb-6 text-slate-100">Create a New Notecard</h2>
+                <form id="addNotecardForm" class="space-y-6">
                     <div>
-                        <label for="notecardTerm" class="block text-sm font-medium text-slate-600 mb-1">Term (Front):</label>
+                        <label for="notecardTerm" class="block text-sm font-medium text-slate-400 mb-1">Term (Front):</label>
                         <input type="text" id="notecardTerm" name="notecardTerm" required
-                               class="w-full p-3 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition">
+                               class="w-full p-3 bg-slate-700 border border-slate-600 text-slate-100 rounded-md shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition placeholder-slate-500">
                     </div>
                     <div>
-                        <label for="notecardDefinition" class="block text-sm font-medium text-slate-600 mb-1">Definition (Back):</label>
-                        <textarea id="notecardDefinition" name="notecardDefinition" rows="3" required
-                                  class="w-full p-3 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition"></textarea>
+                        <label for="notecardDefinition" class="block text-sm font-medium text-slate-400 mb-1">Definition (Back):</label>
+                        <textarea id="notecardDefinition" name="notecardDefinition" rows="4" required
+                                  class="w-full p-3 bg-slate-700 border border-slate-600 text-slate-100 rounded-md shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition placeholder-slate-500"></textarea>
                     </div>
                     <button type="submit" class="btn btn-success w-full sm:w-auto">Add Notecard</button>
                 </form>
             </section>
 
             <section id="notecardsDisplaySection" aria-labelledby="notecardsDisplayHeading">
-                <h2 id="notecardsDisplayHeading" class="text-2xl font-semibold mb-6 text-slate-700">Your Notecards</h2>
+                <h2 id="notecardsDisplayHeading" class="text-2xl font-semibold mb-6 text-slate-100">Your Notecards</h2>
                 <div id="notecardsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Example of a notecard structure for styling reference (JS creates this)
+                    <div class="notecard h-64 flex flex-col justify-between bg-slate-700 shadow-lg hover:shadow-xl">
+                        <div class="notecard-inner">
+                            <div class="notecard-front">Term</div>
+                            <div class="notecard-back">Definition</div>
+                        </div>
+                        <div class="absolute top-2 right-2 z-10">
+                            <button class="btn-icon text-lg leading-none rounded-full w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-400 hover:bg-slate-600" title="Delete card">&times;</button>
+                        </div>
                     </div>
+                     -->
+                </div>
                 <p id="noCardsMessage" class="text-slate-500 col-span-full text-center py-4 hidden">No notecards yet. Add some above!</p>
             </section>
         </div>
 
-        <section id="studySessionInterface" class="hidden mt-8 p-6 bg-white rounded-lg shadow-lg">
-            <h2 class="text-2xl font-semibold mb-4 text-slate-700">Study Session</h2>
-            <p id="studyProgress" class="text-sm text-slate-500 mb-4"></p>
-            <div id="studyCardDisplay" class="mb-6">
-                <div id="studyCardTerm" class="font-semibold"></div>
-                <div id="studyCardDefinition" class="hidden mt-2">
-                    <p id="studyCardDefinitionContent"></p>
-                </div>
+        <section id="studySessionInterface" class="hidden mt-8 p-6 bg-slate-800 rounded-lg shadow-xl">
+            <h2 class="text-2xl font-semibold mb-4 text-slate-100">Study Session</h2>
+            <p id="studyProgress" class="text-sm text-slate-400 mb-4"></p>
+            <div id="studyCardDisplay" class="mb-6"> <div id="studyCardTerm" class="font-semibold text-xl"></div> <div id="studyCardDefinition" class="hidden mt-2">
+                    <p id="studyCardDefinitionContent" class="text-lg"></p> </div>
             </div>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
                 <button id="revealDefinitionBtn" class="btn btn-primary w-full sm:w-auto">Reveal Definition</button>
                 <button id="knewItBtn" class="btn btn-success hidden w-full sm:w-auto">I Knew This!</button>
                 <button id="didNotKnowItBtn" class="btn btn-danger hidden w-full sm:w-auto">Didn't Know This</button>
             </div>
-             <button id="exitStudyBtn" class="btn btn-secondary mt-6 mx-auto block">Exit Study Session</button>
+            <button id="exitStudyBtn" class="btn btn-secondary mt-6 mx-auto block">Exit Study Session</button>
         </section>
 
-        <section id="studyResultsInterface" class="hidden mt-8 p-6 bg-white rounded-lg shadow-lg">
-            <h2 class="text-2xl font-semibold mb-4 text-slate-700">Study Session Results</h2>
-            <p id="studyResultMessage" class="mb-4 text-slate-600"></p>
+        <section id="studyResultsInterface" class="hidden mt-8 p-6 bg-slate-800 rounded-lg shadow-xl">
+            <h2 class="text-2xl font-semibold mb-4 text-slate-100">Study Session Results</h2>
+            <p id="studyResultMessage" class="mb-4 text-slate-300"></p>
             <ul id="studyResultsList" class="space-y-2 mb-6">
                 </ul>
             <div class="flex flex-wrap gap-3">
@@ -270,19 +300,15 @@
                 <button id="studyAgainBtn" class="btn btn-warning hidden">Study These Again</button>
             </div>
         </section>
-
     </main>
 
-    <footer class="text-center py-6 mt-12 bg-white shadow-inner">
-            <p class="text-sm text-sky-300">&copy; <span id="currentYear"></span> Jamie Sessions. Happy Studying!</p>
+    <footer class="text-center py-6 mt-auto bg-slate-800 border-t border-slate-700">
+        <p class="text-sm text-sky-400">&copy; <span id="currentYear"></span> Jamie Sessions. Happy Studying!</p>
     </footer>
 
-    <div id="messageModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" id="closeModalBtn">&times;</span>
-            <p id="modalMessageText" class="text-lg text-slate-700"></p>
-            <div class="mt-4 text-right">
-                <button id="modalConfirmBtn" class="btn btn-primary hidden">OK</button>
+    <div id="messageModal" class="modal"> <div class="modal-content"> <span class="close-button" id="closeModalBtn">&times;</span>
+            <p id="modalMessageText" class="text-lg text-slate-200"></p>
+            <div class="mt-6 text-right space-x-3"> <button id="modalConfirmBtn" class="btn btn-primary hidden">OK</button>
                 <button id="modalCancelBtn" class="btn btn-secondary hidden">Cancel</button>
             </div>
         </div>
@@ -313,16 +339,16 @@
             const studySessionInterface = document.getElementById('studySessionInterface');
             const studyResultsInterface = document.getElementById('studyResultsInterface');
             const studyProgress = document.getElementById('studyProgress');
-            const studyCardDisplay = document.getElementById('studyCardDisplay'); // The main display box
-            const studyCardTerm = document.getElementById('studyCardTerm'); // For the term text
-            const studyCardDefinition = document.getElementById('studyCardDefinition'); // Container for definition text
-            const studyCardDefinitionContent = document.getElementById('studyCardDefinitionContent'); // Actual definition p tag
+            const studyCardDisplay = document.getElementById('studyCardDisplay');
+            const studyCardTerm = document.getElementById('studyCardTerm');
+            const studyCardDefinition = document.getElementById('studyCardDefinition');
+            const studyCardDefinitionContent = document.getElementById('studyCardDefinitionContent');
             const revealDefinitionBtn = document.getElementById('revealDefinitionBtn');
             const knewItBtn = document.getElementById('knewItBtn');
             const didNotKnowItBtn = document.getElementById('didNotKnowItBtn');
             const exitStudyBtn = document.getElementById('exitStudyBtn');
             const studyResultMessage = document.getElementById('studyResultMessage');
-            const studyResultsList = document.getElementById('studyResultsList'); // ul for wrong cards
+            const studyResultsList = document.getElementById('studyResultsList');
             const returnToMainBtn = document.getElementById('returnToMainBtn');
             const studyAgainBtn = document.getElementById('studyAgainBtn');
 
@@ -331,7 +357,7 @@
             // --- Study Session State ---
             let studySessionData = {
                 isActive: false,
-                allCardsInSession: [], // Holds the cards for the current session
+                allCardsInSession: [],
                 currentCardIndex: 0,
                 cardsMarkedWrong: [],
                 cardsMarkedRight: []
@@ -349,7 +375,8 @@
                 modalConfirmBtn.className = 'btn'; // Reset classes
                 modalCancelBtn.className = 'btn btn-secondary hidden'; // Reset and hide cancel
 
-                if (type === 'error') modalConfirmBtn.classList.add('btn-danger');
+                // Apply new button styles based on type
+                if (type === 'error' || type === 'danger') modalConfirmBtn.classList.add('btn-danger');
                 else if (type === 'success') modalConfirmBtn.classList.add('btn-success');
                 else if (type === 'warning') modalConfirmBtn.classList.add('btn-warning');
                 else modalConfirmBtn.classList.add('btn-primary');
@@ -357,7 +384,7 @@
 
                 if (showCancel) {
                     modalCancelBtn.classList.remove('hidden');
-                    modalCancelBtn.textContent = 'Cancel'; // Default cancel text
+                    modalCancelBtn.textContent = 'Cancel';
                     modalCancelBtn.onclick = closeModal;
                 } else {
                     modalCancelBtn.classList.add('hidden');
@@ -367,7 +394,7 @@
 
             function closeModal() {
                 messageModal.style.display = 'none';
-                modalConfirmBtn.onclick = null; // Clear handlers to prevent multiple executions
+                modalConfirmBtn.onclick = null;
                 modalCancelBtn.onclick = null;
             }
             closeModalBtn.onclick = closeModal;
@@ -391,21 +418,22 @@
 
             function createNotecardElement(card, index) {
                 const cardDiv = document.createElement('div');
-                cardDiv.classList.add('notecard', 'h-64', 'flex', 'flex-col', 'justify-between');
-                cardDiv.dataset.index = index; // Store original index for deletion
+                // Apply Tailwind classes for dark theme notecard
+                cardDiv.className = 'notecard h-64 flex flex-col justify-between bg-slate-700 shadow-lg hover:shadow-xl rounded-lg';
+                cardDiv.dataset.index = index;
 
                 const cardInner = document.createElement('div');
                 cardInner.classList.add('notecard-inner');
 
                 const cardFront = document.createElement('div');
-                cardFront.classList.add('notecard-front');
+                cardFront.classList.add('notecard-front'); // Custom CSS handles specific bg/text
                 const frontContent = document.createElement('div');
                 frontContent.classList.add('notecard-content');
                 frontContent.textContent = card.term;
                 cardFront.appendChild(frontContent);
 
                 const cardBack = document.createElement('div');
-                cardBack.classList.add('notecard-back');
+                cardBack.classList.add('notecard-back'); // Custom CSS handles specific bg/text
                 const backContent = document.createElement('div');
                 backContent.classList.add('notecard-content');
                 backContent.textContent = card.definition;
@@ -415,25 +443,24 @@
                 cardInner.appendChild(cardBack);
                 cardDiv.appendChild(cardInner);
 
-                // Flip functionality
                 cardDiv.addEventListener('click', (e) => {
-                    if (e.target.closest('.delete-btn-container')) return; // Don't flip if delete is clicked
+                    if (e.target.closest('.delete-btn-container')) return;
                     cardDiv.classList.toggle('flipped');
                 });
 
-                // Delete button
                 const deleteBtnContainer = document.createElement('div');
                 deleteBtnContainer.classList.add('delete-btn-container', 'absolute', 'top-2', 'right-2', 'z-10');
                 const deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = '&times;'; // X symbol
-                deleteBtn.classList.add('btn-icon', 'text-lg', 'leading-none', 'rounded-full', 'w-8', 'h-8', 'flex', 'items-center', 'justify-center');
+                deleteBtn.innerHTML = '&times;';
+                // Apply new icon button style
+                deleteBtn.className = 'btn-icon text-xl leading-none rounded-full w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-400 hover:bg-slate-600 transition-colors';
                 deleteBtn.title = "Delete card";
                 deleteBtn.onclick = (e) => {
-                    e.stopPropagation(); // Prevent card flip on delete click
+                    e.stopPropagation();
                     deleteNotecard(index);
                 };
                 deleteBtnContainer.appendChild(deleteBtn);
-                cardDiv.appendChild(deleteBtnContainer); // Append to cardDiv, not cardInner
+                cardDiv.appendChild(deleteBtnContainer);
 
                 return cardDiv;
             }
@@ -443,25 +470,23 @@
                     showMessage('Both term and definition are required.', 'error');
                     return;
                 }
-                notecards.push({ term, definition, id: Date.now() }); // Add a unique ID
+                notecards.push({ term, definition, id: Date.now() });
                 renderNotecards();
-                // No automatic save message here, saveCardsBtn provides explicit feedback
             }
 
             function deleteNotecard(index) {
                 showMessage('Are you sure you want to delete this card?', 'warning', () => {
                     notecards.splice(index, 1);
                     renderNotecards();
-                    saveCardsToLocalStorage(); // Save after deletion
+                    saveCardsToLocalStorage();
                     showMessage('Notecard deleted.', 'info');
-                }, true); // Show cancel button
+                }, true);
             }
 
             // --- Local Storage Functions ---
             function saveCardsToLocalStorage() {
                 try {
                     localStorage.setItem('mindflipNotecards', JSON.stringify(notecards));
-                    // Provide feedback only if modal isn't already showing and not in study session
                     if ((!messageModal.style.display || messageModal.style.display === 'none') && !studySessionData.isActive) {
                         showMessage('Notecards saved to your browser!', 'success');
                     } else {
@@ -480,11 +505,11 @@
                         notecards = JSON.parse(storedCards);
                     } catch (e) {
                         console.error("Error parsing cards from localStorage:", e);
-                        notecards = []; // Reset to empty if parsing fails
+                        notecards = [];
                         showMessage('Could not load cards from previous session due to an error.', 'error');
                     }
                 }
-                renderNotecards(); // Always render, even if empty
+                renderNotecards();
             }
 
             // --- Import/Export Functions ---
@@ -493,7 +518,7 @@
                     showMessage('No notecards to export.', 'info');
                     return;
                 }
-                const jsonData = JSON.stringify(notecards, null, 2); // Pretty print JSON
+                const jsonData = JSON.stringify(notecards, null, 2);
                 const blob = new Blob([jsonData], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -512,7 +537,7 @@
 
                 if (file.type !== "application/json") {
                     showMessage("Invalid file type. Please select a '.json' file.", "error");
-                    importFile.value = ""; // Reset file input
+                    importFile.value = "";
                     return;
                 }
 
@@ -520,11 +545,9 @@
                 reader.onload = (e) => {
                     try {
                         const importedData = JSON.parse(e.target.result);
-                        // Basic validation of imported structure
                         if (Array.isArray(importedData) && importedData.every(item => item && typeof item.term === 'string' && typeof item.definition === 'string')) {
                             showMessage('Import successful. Do you want to merge with existing cards or replace them?', 'info',
                                 () => { // OnConfirm (Merge)
-                                    // Filter out duplicates before merging
                                     const newCardsToMerge = importedData.filter(newCard =>
                                         !notecards.some(existingCard => existingCard.term === newCard.term && existingCard.definition === newCard.definition)
                                     );
@@ -533,27 +556,25 @@
                                 },
                                 true // Show Cancel button
                             );
-                            // Customize modal buttons for Merge/Replace
                             modalConfirmBtn.textContent = 'Merge';
                             modalCancelBtn.textContent = 'Replace';
                             modalCancelBtn.onclick = () => { // OnCancel (Replace)
                                 notecards = importedData;
                                 renderNotecards(); saveCardsToLocalStorage(); closeModal(); showMessage('Cards replaced successfully!', 'success');
                             };
-
                         } else {
-                            showMessage('Invalid JSON format. Make sure the file was exported from MindFlip or has the correct structure (array of objects with "term" and "definition" strings).', 'error');
+                            showMessage('Invalid JSON format. Make sure the file was exported from MindFlip or has the correct structure.', 'error');
                         }
                     } catch (error) {
                         console.error('Error importing cards:', error);
                         showMessage('Error reading or parsing the file. It might be corrupted.', 'error');
                     } finally {
-                        importFile.value = ""; // Reset file input in all cases
+                        importFile.value = "";
                     }
                 };
                 reader.onerror = () => {
                     showMessage('Failed to read the file.', 'error');
-                    importFile.value = ""; // Reset file input
+                    importFile.value = "";
                 };
                 reader.readAsText(file);
             }
@@ -566,17 +587,17 @@
                 showMessage('Are you sure you want to delete ALL cards? This cannot be undone.', 'danger', () => {
                     notecards = [];
                     renderNotecards();
-                    saveCardsToLocalStorage(); // Persist the clearance
+                    saveCardsToLocalStorage();
                     showMessage('All notecards have been cleared.', 'success');
-                }, true); // Show cancel button
+                }, true);
             }
 
-            function shuffleArray(array) { // Fisher-Yates shuffle
+            function shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]];
                 }
-                return array; // CORRECTED TYPO from 'arr' to 'array'
+                return array;
             }
 
             // --- Study Session Functions ---
@@ -585,19 +606,18 @@
                     showMessage('No cards available for this study session.', 'info');
                     return;
                 }
-
                 studySessionData.isActive = true;
-                studySessionData.allCardsInSession = shuffleArray([...cardsToStudy]); // Use a shuffled copy
+                studySessionData.allCardsInSession = shuffleArray([...cardsToStudy]);
                 studySessionData.currentCardIndex = 0;
-                studySessionData.cardsMarkedWrong = []; // Reset for the new session
-                studySessionData.cardsMarkedRight = [];   // Reset for the new session
+                studySessionData.cardsMarkedWrong = [];
+                studySessionData.cardsMarkedRight = [];
 
                 mainContentArea.classList.add('hidden');
-                studyResultsInterface.classList.add('hidden'); // Ensure results are hidden
+                studyResultsInterface.classList.add('hidden');
                 studySessionInterface.classList.remove('hidden');
 
                 loadNextStudyCard();
-                updateStudySessionButtons(false); // Definition not revealed initially
+                updateStudySessionButtons(false);
             }
 
             function loadNextStudyCard() {
@@ -605,10 +625,10 @@
                     const card = studySessionData.allCardsInSession[studySessionData.currentCardIndex];
                     studyCardTerm.textContent = card.term;
                     studyCardDefinitionContent.textContent = card.definition;
-                    studyCardDefinition.classList.add('hidden'); // Hide definition for the new card
+                    studyCardDefinition.classList.add('hidden');
                     studyProgress.textContent = `Card ${studySessionData.currentCardIndex + 1} of ${studySessionData.allCardsInSession.length}`;
                 } else {
-                    endStudySession(); // All cards in the current session have been reviewed
+                    endStudySession();
                 }
             }
 
@@ -644,39 +664,38 @@
                     studyResultMessage.textContent = "The study session had no cards.";
                 }
 
-
-                studyResultsList.innerHTML = ''; // Clear previous results from the list
+                studyResultsList.innerHTML = '';
                 if (studySessionData.cardsMarkedWrong.length > 0) {
                     const listTitle = document.createElement('p');
                     listTitle.textContent = "Cards you might want to review:";
-                    listTitle.classList.add('font-semibold', 'mb-2', 'text-slate-600');
+                    listTitle.classList.add('font-semibold', 'mb-2', 'text-slate-300');
                     studyResultsList.appendChild(listTitle);
 
                     studySessionData.cardsMarkedWrong.forEach(card => {
-                        const listItem = document.createElement('li');
+                        const listItem = document.createElement('li'); // Styled by CSS
                         listItem.innerHTML = `<strong>Term:</strong> ${card.term} <br> <strong>Definition:</strong> ${card.definition}`;
                         studyResultsList.appendChild(listItem);
                     });
-                    studyAgainBtn.classList.remove('hidden'); // Show "Study These Again" button
+                    studyAgainBtn.classList.remove('hidden');
                 } else {
-                    studyAgainBtn.classList.add('hidden'); // Hide if no cards were marked wrong
-                    if (totalInSession > 0) { // And there were cards in the session
+                    studyAgainBtn.classList.add('hidden');
+                    if (totalInSession > 0) {
                         const allCorrectMessage = document.createElement('p');
                         allCorrectMessage.textContent = "Excellent! You knew all the cards in this session.";
-                        allCorrectMessage.classList.add('text-green-600', 'font-semibold');
+                        allCorrectMessage.classList.add('text-green-400', 'font-semibold'); // Adjusted color for dark theme
                         studyResultsList.appendChild(allCorrectMessage);
                     }
                 }
             }
 
-            // --- Event Listeners (Forms, Buttons) ---
+            // --- Event Listeners ---
             addNotecardForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const term = e.target.notecardTerm.value;
                 const definition = e.target.notecardDefinition.value;
                 addNotecard(term, definition);
-                e.target.reset(); // Clear form fields
-                saveCardsToLocalStorage(); // Save after adding
+                e.target.reset();
+                saveCardsToLocalStorage();
             });
 
             saveCardsBtn.addEventListener('click', saveCardsToLocalStorage);
@@ -684,18 +703,17 @@
             importFile.addEventListener('change', importCardsHandler);
             clearAllBtn.addEventListener('click', clearAllCards);
 
-            // Study Session Button Event Listeners
             studyNotesBtn.addEventListener('click', () => {
                 if (notecards.length === 0) {
                     showMessage('Please add some notecards before starting a study session.', 'info');
                     return;
                 }
-                startStudySession(notecards); // Start session with all available notecards
+                startStudySession(notecards);
             });
 
             revealDefinitionBtn.addEventListener('click', () => {
                 studyCardDefinition.classList.remove('hidden');
-                updateStudySessionButtons(true); // Definition is now revealed
+                updateStudySessionButtons(true);
             });
 
             knewItBtn.addEventListener('click', () => {
@@ -703,27 +721,27 @@
                     studySessionData.cardsMarkedRight.push(studySessionData.allCardsInSession[studySessionData.currentCardIndex]);
                     studySessionData.currentCardIndex++;
                     loadNextStudyCard();
-                    updateStudySessionButtons(false); // Reset buttons for the next card
+                    updateStudySessionButtons(false);
                 }
             });
 
             didNotKnowItBtn.addEventListener('click', () => {
-                 if (studySessionData.isActive && studySessionData.currentCardIndex < studySessionData.allCardsInSession.length) {
+                if (studySessionData.isActive && studySessionData.currentCardIndex < studySessionData.allCardsInSession.length) {
                     studySessionData.cardsMarkedWrong.push(studySessionData.allCardsInSession[studySessionData.currentCardIndex]);
                     studySessionData.currentCardIndex++;
                     loadNextStudyCard();
-                    updateStudySessionButtons(false); // Reset buttons for the next card
+                    updateStudySessionButtons(false);
                 }
             });
 
             exitStudyBtn.addEventListener('click', () => {
-                if (!studySessionData.isActive) return; // Prevent action if not in session
-                showMessage('Are you sure you want to exit the study session? Your current progress in this session will be lost.', 'warning', () => {
+                if (!studySessionData.isActive) return;
+                showMessage('Are you sure you want to exit the study session? Progress will be lost.', 'warning', () => {
                     studySessionData.isActive = false;
                     studySessionInterface.classList.add('hidden');
                     mainContentArea.classList.remove('hidden');
-                    studyResultsInterface.classList.add('hidden'); // Ensure results are also hidden
-                }, true); // Show cancel button
+                    studyResultsInterface.classList.add('hidden');
+                }, true);
             });
 
             returnToMainBtn.addEventListener('click', () => {
@@ -733,10 +751,9 @@
 
             studyAgainBtn.addEventListener('click', () => {
                 if (studySessionData.cardsMarkedWrong.length > 0) {
-                    startStudySession(studySessionData.cardsMarkedWrong); // Study only the cards marked wrong
+                    startStudySession(studySessionData.cardsMarkedWrong);
                 } else {
-                    // This case should ideally not happen if button is hidden, but as a fallback:
-                    showMessage('No cards were marked as "Didn\'t Know". Would you like to study all cards again?', 'info', () => {
+                    showMessage('No cards were marked as "Didn\'t Know". Study all cards again?', 'info', () => {
                         startStudySession(notecards);
                     }, true);
                     modalConfirmBtn.textContent = 'Study All';
@@ -747,11 +764,10 @@
             if (currentYearSpan) {
                 currentYearSpan.textContent = new Date().getFullYear();
             }
-            loadCardsFromLocalStorage(); // This will also call renderNotecards
-            // Initial state for study buttons (they are hidden by default CSS, but JS manages during session)
+            loadCardsFromLocalStorage();
             updateStudySessionButtons(false);
 
-        }); // CLOSING BRACKET FOR DOMContentLoaded listen
+        }); // END DOMContentLoaded
     </script>
 </body>
 </html>
