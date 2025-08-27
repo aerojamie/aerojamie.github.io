@@ -1,34 +1,20 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const sectionSwitcher = document.getElementById('section-switcher');
+(function() {
+  // Year
+  const yearEl = document.getElementById('currentYear');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // Function to set the dropdown to the current page
-    function setActiveDropdownOption() {
-        if (!sectionSwitcher) return;
+  // Nav select -> navigate
+  const select = document.getElementById('section-switcher');
+  if (select) {
+    select.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val) window.location.href = val;
+    });
+  }
 
-        // Get the current page's filename (e.g., "resume.html", "index.html")
-        let currentPageFile = window.location.pathname.split("/").pop();
-        if (currentPageFile === "" || !currentPageFile.includes(".html")) { // Handles root path
-            currentPageFile = "index.html";
-        }
-
-        // Find the option that matches the current page and select it
-        for (let i = 0; i < sectionSwitcher.options.length; i++) {
-            if (sectionSwitcher.options[i].value === currentPageFile) {
-                sectionSwitcher.selectedIndex = i;
-                break;
-            }
-        }
-    }
-
-    if (sectionSwitcher) {
-        // Set the active option on page load
-        setActiveDropdownOption();
-
-        // Add event listener for when the dropdown selection changes
-        sectionSwitcher.addEventListener('change', function() {
-            if (this.value) { // Ensure a value (a filename) is selected
-                window.location.href = this.value; // Navigate to the selected HTML page
-            }
-        });
-    }
-});
+  // Improve keyboard focus visibility on clickable icons
+  document.querySelectorAll('a, button, select').forEach(el => {
+    el.addEventListener('focus', () => el.classList.add('focus-ring'));
+    el.addEventListener('blur',  () => el.classList.remove('focus-ring'));
+  });
+})();
