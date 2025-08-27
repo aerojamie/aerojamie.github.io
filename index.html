@@ -1,50 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jamie Sessions - Home</title> <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jamie Sessions — Home</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <img src="https://avatars.githubusercontent.com/u/116468724?v=4" alt="Profile Picture" class="avatar">
-            <div class="header-text">
-                <h1>Jamie Sessions</h1>
-                <div class="contact-info">
-                    <div><i class="fas fa-envelope"></i> <a href="mailto:jamiesess05@gmail.com">jamiesess05@gmail.com</a></div>
-                    <div><i class="fas fa-map-marker-alt"></i> Idaho</div>
-                </div>
-            </div>
-            <div class="dropdown-nav-container header-dropdown">
-                <label for="section-switcher" class="sr-only">Navigate to:</label>
-                <select id="section-switcher" class="modern-dropdown">
-                    <option value="index.html">Home</option>
-                    <option value="resume.html">Resume</option>
-                    <option value="photography.html">Photography</option>
-                    <option value="coding.html">Coding Projects</option>
-                </select>
-            </div>
-        </header>
-            
-        <section class="bio">
-            <p>Multidisciplinary storyteller & creative—blending words, art, music, and photography with a linguist’s precision. 🎨📸🎶 | Social Media Strategist • Bilingual Communicator • Community Builder | Passionate about tech, education, and impactful storytelling.</p>
-        </section>
-            
-        <div class="social-links">
-            <a href="https://github.com/aerojamie" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/jamie-sessions-15b646281" class="social-link" target="_blank"><i class="fab fa-linkedin"></i></a>
-            <a href="https://instagram.com/cijamie" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="mailto:jamiesess05@gmail.com" class="social-link" target="_blank"><i class="fas fa-envelope"></i></a>
+  <div class="container">
+    <header>
+      <div class="avatar-wrap">
+        <span class="avatar-ring" aria-hidden="true"></span>
+        <img src="https://avatars.githubusercontent.com/u/116468724?v=4" alt="Portrait of Jamie Sessions" class="avatar" loading="lazy" />
+      </div>
+
+      <div class="header-text">
+        <h1>Jamie Sessions</h1>
+        <div class="contact-info">
+          <div><i class="fas fa-envelope"></i> <a href="mailto:jamiesess05@gmail.com">jamiesess05@gmail.com</a></div>
+          <div><i class="fas fa-map-marker-alt"></i> Idaho</div>
         </div>
-        <div class="page-content">
-            <section class="welcome-section text-center">
-                 <p>Thank you for visiting! Explore my work using the dropdown menu above.</p>
-            <p class="text-sm text-sky-300">&copy; <span id="currentYear"></span> Jamie Sessions.</p>
-            </section>
-        </div>
-    </div> <script src="script.js"></script>
+      </div>
+
+      <div class="dropdown-nav-container header-dropdown">
+        <label for="section-switcher" class="sr-only">Navigate to:</label>
+        <select id="section-switcher" class="modern-dropdown" aria-label="Primary navigation">
+          <option value="index.html" selected>Home</option>
+          <option value="resume.html">Resume</option>
+          <option value="photography.html">Photography</option>
+          <option value="coding.html">Coding Projects</option>
+        </select>
+      </div>
+    </header>
+
+    <section class="bio" aria-label="About Jamie">
+      <p>
+        Multidisciplinary storyteller & creative — blending words, art, music, and photography with a linguist’s precision. <span aria-hidden="true">🎨📸🎶</span>
+        <br/><strong>Social Media Strategist</strong> • <strong>Bilingual Communicator</strong> • <strong>Community Builder</strong> — passionate about technology, education, and impactful storytelling.
+      </p>
+    </section>
+
+    <nav class="social-links" aria-label="Social links">
+      <a href="https://github.com/aerojamie" class="social-link" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/jamie-sessions-15b646281" class="social-link" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="https://instagram.com/cijamie" class="social-link" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="mailto:jamiesess05@gmail.com" class="social-link" target="_blank" rel="noopener" aria-label="Email"><i class="fas fa-envelope"></i></a>
+    </nav>
+
+    <main class="page-content">
+      <section class="welcome-section text-center" aria-labelledby="welcome-heading">
+        <h2 id="welcome-heading" class="sr-only">Welcome</h2>
+        <p class="tagline">Thanks for stopping by — explore my work using the menu above.</p>
+        <p class="footer">&copy; <span id="currentYear"></span> Jamie Sessions</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
