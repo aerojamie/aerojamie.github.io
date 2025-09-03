@@ -6,6 +6,7 @@
     <title>BudgetPal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
     <style>
         :root {
             --bg-primary: #111827; /* Tailwind gray-900 - Deepest background */
@@ -199,116 +200,136 @@
 </head>
 <body>
     <div class="container">
-        <header class="mb-10 text-center">
-            <h1 class="text-4xl font-bold text-text-primary">BudgetPal</h1>
-            <p class="text-text-secondary mt-2 text-lg">Manage your income and expenses effectively.</p>
+        <header>
+            <img src="https://avatars.githubusercontent.com/u/116468724?v=4" alt="Profile Picture" class="avatar">
+            <div class="header-text">
+                <h1>Jamie Sessions</h1>
+                <div class="contact-info">
+                    <div><i class="fas fa-envelope"></i> <a href="mailto:jamiesess05@gmail.com">jamiesess05@gmail.com</a></div>
+                    <div><i class="fas fa-map-marker-alt"></i> Idaho</div>
+                </div>
+            </div>
+            <div class="dropdown-nav-container header-dropdown">
+                <label for="section-switcher" class="sr-only">Navigate to:</label>
+                <select id="section-switcher" class="modern-dropdown">
+                    <option value="../index.html">Home</option>
+                    <option value="../resume.html">Resume</option>
+                    <option value="../photography.html">Photography</option>
+                    <option value="../coding.html">Coding Projects</option>
+                </select>
+            </div>
         </header>
 
-        <section id="summarySection" class="mb-10 grid grid-cols-1 md:grid-cols-3 gap-6 summary-grid">
-            <div class="summary-card">
-                <h2 class="summary-title">Total Income</h2>
-                <p id="totalIncome" class="summary-value income">$0.00</p>
-            </div>
-            <div class="summary-card">
-                <h2 class="summary-title">Total Expenses</h2>
-                <p id="totalExpenses" class="summary-value expense">$0.00</p>
-            </div>
-            <div class="summary-card">
-                <h2 class="summary-title">Net Balance</h2>
-                <p id="netBalance" class="summary-value balance">$0.00</p>
-            </div>
-        </section>
+        <div class="project-container">
+            <h1 class="project-title">BudgetPal</h1>
+            <p class="project-description">Manage your income and expenses effectively.</p>
 
-        <section class="mb-10 p-6 md:p-8 rounded-lg border border-[var(--border-color)]" style="background-color: var(--bg-secondary);">
-            <h2 class="text-2xl font-semibold text-text-primary mb-6">Add New Transaction</h2>
-            <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-4 items-end form-grid">
-                <div>
-                    <label for="transactionDate" class="block text-sm font-medium text-text-secondary mb-1">Date</label>
-                    <input type="date" id="transactionDate" name="transactionDate" class="form-input" required>
+            <section id="summarySection" class="mb-10 grid grid-cols-1 md:grid-cols-3 gap-6 summary-grid">
+                <div class="summary-card">
+                    <h2 class="summary-title">Total Income</h2>
+                    <p id="totalIncome" class="summary-value income">$0.00</p>
                 </div>
-                <div>
-                    <label for="transactionDescription" class="block text-sm font-medium text-text-secondary mb-1">Description</label>
-                    <input type="text" id="transactionDescription" name="transactionDescription" class="form-input" placeholder="e.g., Salary, Groceries" required>
+                <div class="summary-card">
+                    <h2 class="summary-title">Total Expenses</h2>
+                    <p id="totalExpenses" class="summary-value expense">$0.00</p>
                 </div>
-                <div>
-                    <label for="transactionCategory" class="block text-sm font-medium text-text-secondary mb-1">Category</label>
-                    <input type="text" id="transactionCategory" name="transactionCategory" class="form-input" placeholder="e.g., Work, Food" required>
+                <div class="summary-card">
+                    <h2 class="summary-title">Net Balance</h2>
+                    <p id="netBalance" class="summary-value balance">$0.00</p>
                 </div>
-                <div>
-                    <label for="transactionType" class="block text-sm font-medium text-text-secondary mb-1">Type</label>
-                    <select id="transactionType" name="transactionType" class="form-select" required>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                    </select>
-                </div>
-                <div class="lg:col-span-1">
-                     <label for="transactionAmount" class="block text-sm font-medium text-text-secondary mb-1">Amount</label>
-                    <input type="number" id="transactionAmount" name="transactionAmount" class="form-input" placeholder="0.00" step="0.01" required>
-                </div>
-                <div class="md:col-span-2 lg:col-span-5 flex justify-end mt-5">
-                    <button type="submit" class="btn btn-primary w-full md:w-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 inline-block mr-2">
-                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                        </svg>
-                        Add Transaction
-                    </button>
-                </div>
-            </form>
-        </section>
+            </section>
 
-        <section>
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
-                <h2 class="text-2xl font-semibold text-text-primary">Transaction History</h2>
-                <div class="flex flex-wrap gap-2 justify-center sm:justify-end">
-                    <button id="exportData" class="btn btn-secondary text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-1">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                        </svg>
-                        Export
-                    </button>
-                    <label for="importFile" class="btn btn-secondary text-sm cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-1">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                        </svg>
-                        Import
-                    </label>
-                    <input type="file" id="importFile" class="hidden" accept=".json">
-                    <button id="clearAllData" class="btn btn-danger text-sm">
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-1">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12.56 0c1.153 0 2.243.032 3.223.094M7.5 5.25V3.75c0-.621.504-1.125 1.125-1.125h.375q.75 0 1.063.281c.313.281.563.657.563 1.063v1.5m-1.875.75H20.25m-7.5 0H4.125" />
-                        </svg>
-                        Clear All
-                    </button>
-                </div>
-            </div>
-            <div class="overflow-x-auto rounded-lg border border-[var(--border-color)]" style="background-color: var(--bg-secondary);">
-                <table class="min-w-full table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionTableBody">
-                        </tbody>
-                </table>
-                <p id="noTransactionsMessage" class="text-center text-text-secondary py-10 hidden">No transactions yet. Add some to get started!</p>
-            </div>
-        </section>
+            <section class="mb-10 p-6 md:p-8 rounded-lg border border-[var(--border-color)]" style="background-color: var(--bg-secondary);">
+                <h2 class="text-2xl font-semibold text-text-primary mb-6">Add New Transaction</h2>
+                <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-4 items-end form-grid">
+                    <div>
+                        <label for="transactionDate" class="block text-sm font-medium text-text-secondary mb-1">Date</label>
+                        <input type="date" id="transactionDate" name="transactionDate" class="form-input" required>
+                    </div>
+                    <div>
+                        <label for="transactionDescription" class="block text-sm font-medium text-text-secondary mb-1">Description</label>
+                        <input type="text" id="transactionDescription" name="transactionDescription" class="form-input" placeholder="e.g., Salary, Groceries" required>
+                    </div>
+                    <div>
+                        <label for="transactionCategory" class="block text-sm font-medium text-text-secondary mb-1">Category</label>
+                        <input type="text" id="transactionCategory" name="transactionCategory" class="form-input" placeholder="e.g., Work, Food" required>
+                    </div>
+                    <div>
+                        <label for="transactionType" class="block text-sm font-medium text-text-secondary mb-1">Type</label>
+                        <select id="transactionType" name="transactionType" class="form-select" required>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+                    <div class="lg:col-span-1">
+                         <label for="transactionAmount" class="block text-sm font-medium text-text-secondary mb-1">Amount</label>
+                        <input type="number" id="transactionAmount" name="transactionAmount" class="form-input" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <div class="md:col-span-2 lg:col-span-5 flex justify-end mt-5">
+                        <button type="submit" class="btn btn-primary w-full md:w-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 inline-block mr-2">
+                                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                            </svg>
+                            Add Transaction
+                        </button>
+                    </div>
+                </form>
+            </section>
 
-        <div id="messageBox" class="fixed bottom-5 right-5 text-white py-3 px-6 rounded-lg shadow-xl hidden transition-all duration-300 opacity-0 transform translate-y-5" style="background-color: var(--accent-blue);">
-            <p id="messageText"></p>
+            <section>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
+                    <h2 class="text-2xl font-semibold text-text-primary">Transaction History</h2>
+                    <div class="flex flex-wrap gap-2 justify-center sm:justify-end">
+                        <button id="exportData" class="btn btn-secondary text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            Export
+                        </button>
+                        <label for="importFile" class="btn btn-secondary text-sm cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                            </svg>
+                            Import
+                        </label>
+                        <input type="file" id="importFile" class="hidden" accept=".json">
+                        <button id="clearAllData" class="btn btn-danger text-sm">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12.56 0c1.153 0 2.243.032 3.223.094M7.5 5.25V3.75c0-.621.504-1.125 1.125-1.125h.375q.75 0 1.063.281c.313.281.563.657.563 1.063v1.5m-1.875.75H20.25m-7.5 0H4.125" />
+                            </svg>
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-[var(--border-color)]" style="background-color: var(--bg-secondary);">
+                    <table class="min-w-full table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionTableBody">
+                            </tbody>
+                    </table>
+                    <p id="noTransactionsMessage" class="text-center text-text-secondary py-10 hidden">No transactions yet. Add some to get started!</p>
+                </div>
+            </section>
+
+            <div id="messageBox" class="fixed bottom-5 right-5 text-white py-3 px-6 rounded-lg shadow-xl hidden transition-all duration-300 opacity-0 transform translate-y-5" style="background-color: var(--accent-blue);">
+                <p id="messageText"></p>
+            </div>
         </div>
+
+        <footer class="footer">
+                <p class="text-sm text-sky-300">&copy; <span id="currentYear"></span> Jamie Sessions.</p>
+        </footer>
     </div>
-
-    <footer class="footer">
-            <p class="text-sm text-sky-300">&copy; <span id="currentYear"></span> Jamie Sessions.</p>
-    </footer>
-
+    <script src="../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // DOM Elements
